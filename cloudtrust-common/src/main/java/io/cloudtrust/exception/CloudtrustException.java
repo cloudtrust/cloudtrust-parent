@@ -13,4 +13,8 @@ public class CloudtrustException extends Exception {
     public CloudtrustException(Throwable cause) {
         super(cause);
     }
+
+    public CloudtrustException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
