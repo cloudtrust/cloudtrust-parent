@@ -197,6 +197,7 @@
                     <version>${owasp-check.version}</version>
                     <configuration>
                         <format>XML</format>
+                        <failOnError>false</failOnError>
                     </configuration>
                 </plugin>
             </plugins>
