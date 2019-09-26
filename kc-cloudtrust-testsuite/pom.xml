@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.keycloak.testsuite</groupId>
         <artifactId>integration-arquillian-tests</artifactId>
-        <version>6.0.1</version>
+        <version>7.0.0</version>
         <relativePath/>
     </parent>
 
@@ -26,7 +26,7 @@
 
         <keycloak.version>${project.version}</keycloak.version>
         <jfreechart.version>1.5.0</jfreechart.version>
-        <cloudtrust-common.version>1.0.0</cloudtrust-common.version>
+        <cloudtrust-common.version>1.1.0</cloudtrust-common.version>
         <spotbugs.version>3.1.12.1</spotbugs.version>
         <owasp-check.version>5.2.1</owasp-check.version>
     </properties>
