@@ -11,6 +11,7 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-testsuite</artifactId>
+    <version>7.0.0</version>
     <description>Parent for testing of keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -24,7 +25,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <keycloak.version>${project.version}</keycloak.version>
+        <keycloak.version>7.0.0</keycloak.version>
         <jfreechart.version>1.5.0</jfreechart.version>
         <cloudtrust-common.version>1.1.0</cloudtrust-common.version>
         <spotbugs.version>3.1.12.1</spotbugs.version>
@@ -211,16 +212,19 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-client-registration-api</artifactId>
+            <version>${keycloak.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-authz-client</artifactId>
+            <version>${keycloak.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -309,6 +313,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-client-cli-dist</artifactId>
+            <version>${keycloak.version}</version>
             <type>zip</type>
             <scope>test</scope>
         </dependency>

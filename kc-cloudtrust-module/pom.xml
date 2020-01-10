@@ -11,12 +11,13 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
+    <version>7.0.0</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
     <properties>
-        <cloudtrust-common.version>1.1.0</cloudtrust-common.version>
-        <keycloak.version>${project.version}</keycloak.version>
+        <cloudtrust-common.version>1.1.1</cloudtrust-common.version>
+        <keycloak.version>7.0.0</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.2</apache-collections.version>
 
@@ -40,6 +41,18 @@
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-core</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-common</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-server-spi</artifactId>
                 <version>${keycloak.version}</version>
                 <scope>provided</scope>
@@ -53,6 +66,18 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-services</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-saml-core</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-saml-core-public</artifactId>
                 <version>${keycloak.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -151,20 +176,33 @@
                     <version>3.1.1</version>
                     <executions>
                         <execution>
+                            <id>jar-with-dependencies</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                            <configuration>
+                                <descriptorRefs>
+                                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                                </descriptorRefs>
+                                <appendAssemblyId>false</appendAssemblyId>
+                            </configuration>
+                        </execution>
+                        <execution>
                             <id>default-package</id>
                             <phase>package</phase>
                             <goals>
                                 <goal>single</goal>
                             </goals>
+                            <configuration>
+                                <descriptors>
+                                    <descriptor>assembly.xml</descriptor>
+                                </descriptors>
+                                <appendAssemblyId>false</appendAssemblyId>
+                                <tarLongFileMode>posix</tarLongFileMode>
+                            </configuration>
                         </execution>
                     </executions>
-                    <configuration>
-                        <appendAssemblyId>false</appendAssemblyId>
-                        <descriptors>
-                            <descriptor>assembly.xml</descriptor>
-                        </descriptors>
-                        <tarLongFileMode>posix</tarLongFileMode>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
