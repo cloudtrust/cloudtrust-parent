@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.cloudtrust</groupId>
+        <artifactId>kc-cloudtrust-module</artifactId>
+        <version>8.0.1</version>
+    </parent>
+
+    <artifactId>kc-cloudtrust-common</artifactId>
+    <description>Common tools for Keycloak/Cloudtrust components</description>
+    <packaging>jar</packaging>
+
+    <properties>
+        <cloudtrust.version>1.3.0</cloudtrust.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-server-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-server-spi-private</artifactId>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
+            <groupId>io.cloudtrust</groupId>
+            <artifactId>cloudtrust-test-tools</artifactId>
+            <version>${cloudtrust.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
