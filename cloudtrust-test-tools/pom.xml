@@ -13,6 +13,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <junit.version>4.12</junit.version>
+        <spotbugs.version>4.0.0</spotbugs.version>
+        <owasp-check.version>5.3.1</owasp-check.version>
     </properties>
 
     <artifactId>cloudtrust-test-tools</artifactId>
@@ -26,4 +28,34 @@
             <version>${junit.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${owasp-check.version}</version>
+                    <configuration>
+                        <format>XML</format>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <skipIfEmpty>true</skipIfEmpty>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
