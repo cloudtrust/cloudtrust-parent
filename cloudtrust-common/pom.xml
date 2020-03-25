@@ -12,18 +12,6 @@
     <description>Common tools for Cloudtrust components</description>
     <packaging>jar</packaging>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
-        <version.pmd.plugin>3.13.0</version.pmd.plugin>
-        <jacoco.version>0.8.5</jacoco.version>
-        <spotbugs.version>4.0.0</spotbugs.version>
-        <fb-contrib.version>7.4.7</fb-contrib.version>
-        <findsecbugs.version>1.10.1</findsecbugs.version>
-        <owasp-check.version>5.3.1</owasp-check.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.cloudtrust</groupId>
