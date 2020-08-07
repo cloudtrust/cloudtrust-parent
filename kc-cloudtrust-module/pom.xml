@@ -21,7 +21,7 @@
 
     <properties>
         <cloudtrust.version>1.4.0</cloudtrust.version>
-        <keycloak.version>8.0.1</keycloak.version>
+        <keycloak.version>11.0.0</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.2</apache-collections.version>
 
