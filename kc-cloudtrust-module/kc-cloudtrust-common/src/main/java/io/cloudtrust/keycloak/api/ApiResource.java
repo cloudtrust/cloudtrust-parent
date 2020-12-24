@@ -12,6 +12,7 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.services.managers.AppAuthManager;
+import org.keycloak.services.managers.AppAuthManager.BearerTokenAuthenticator;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.managers.RealmManager;
 import org.keycloak.services.resources.Cors;
@@ -82,7 +83,7 @@ public class ApiResource {
      * @return
      */
     protected AdminAuth authenticateRealmAdminRequest(HttpHeaders headers) {
-        String tokenString = authManager.extractAuthorizationHeaderToken(headers);
+        String tokenString = AppAuthManager.extractAuthorizationHeaderToken(headers);
         if (tokenString == null) {
             throw new NotAuthorizedException("Bearer");
         }
@@ -100,7 +101,11 @@ public class ApiResource {
             throw new NotAuthorizedException("Unknown realm in token");
         }
         session.getContext().setRealm(realm);
-        AuthenticationManager.AuthResult authResult = authManager.authenticateBearerToken(session, realm, session.getContext().getUri(), clientConnection, headers);
+        BearerTokenAuthenticator bearerAuthenticator = new AppAuthManager.BearerTokenAuthenticator(session);
+        AuthenticationManager.AuthResult authResult = bearerAuthenticator
+            .setConnection(clientConnection)
+            .setHeaders(headers)
+            .authenticate();
         if (authResult == null) {
             LOG.debug("Token not valid");
             throw new NotAuthorizedException("Bearer");

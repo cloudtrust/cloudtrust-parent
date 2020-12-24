@@ -18,7 +18,7 @@ import java.util.Base64;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.number.OrderingComparison.lessThan;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CryptoUtilTest {
 
@@ -37,7 +37,7 @@ public class CryptoUtilTest {
     public void testSecretEncryptionDecryption() {
         byte[] plainText = new byte[32]; //256 bits
         new SecureRandom().nextBytes(plainText);
-        assertThat(CryptoUtil.decryptFromDatabaseStorage(CryptoUtil.encryptForDatabaseStorage(plainText)), equalTo(plainText));
+        org.hamcrest.MatcherAssert.assertThat(CryptoUtil.decryptFromDatabaseStorage(CryptoUtil.encryptForDatabaseStorage(plainText)), equalTo(plainText));
     }
 
     /**
