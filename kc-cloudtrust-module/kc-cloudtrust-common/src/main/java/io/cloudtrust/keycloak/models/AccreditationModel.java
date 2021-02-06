@@ -1,17 +1,16 @@
 package io.cloudtrust.keycloak.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jboss.logging.Logger;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import org.jboss.logging.Logger;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccreditationModel {
@@ -45,7 +44,7 @@ public class AccreditationModel {
     }
 
     public boolean isValid(Instant reference) {
-        if (type==null || (revoked!=null && revoked) || expiryDate==null) {
+        if (type == null || (revoked != null && revoked) || expiryDate == null) {
             return false;
         }
         try {
@@ -66,7 +65,7 @@ public class AccreditationModel {
     }
 
     public static AccreditationModel tryParse(String json) {
-        if (json!=null) {
+        if (json != null) {
             try {
                 return new ObjectMapper().readValue(json, AccreditationModel.class);
             } catch (IOException e) {

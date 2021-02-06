@@ -18,6 +18,7 @@ public class ThemeUtils {
 
     /**
      * Look for the theme of the current realm
+     *
      * @param type Theme type
      * @return A type (if any was found)
      * @throws IOException
@@ -39,6 +40,7 @@ public class ThemeUtils {
 
     /**
      * Returns a stream to a resource in this realm's theme
+     *
      * @param path The path to the resource
      * @return A stream to a resource
      * @throws IOException
@@ -67,7 +69,7 @@ public class ThemeUtils {
             return null;
         }
 
-        Locale locale = user!=null ? session.getContext().resolveLocale(user) : Locale.ENGLISH;
+        Locale locale = user != null ? session.getContext().resolveLocale(user) : Locale.ENGLISH;
         Properties messagesBundle = handleThemeResources(theme, locale);
         return messagesBundle.getProperty(messageId);
     }

@@ -1,12 +1,5 @@
 package io.cloudtrust.keycloak.api;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
@@ -25,6 +18,13 @@ import org.keycloak.services.resources.Cors;
 import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 import org.keycloak.services.resources.admin.permissions.AdminPermissions;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 
 public class ApiResource {
     private static final Logger LOG = Logger.getLogger(ApiResource.class);
@@ -77,6 +77,7 @@ public class ApiResource {
 
     /**
      * Method copied/pasted from AdminRoot
+     *
      * @param headers
      * @return
      */
@@ -135,7 +136,7 @@ public class ApiResource {
 
     protected RealmModel getRealmFromURIPath() {
         RealmModel realm = session.realms().getRealmByName(getPathParameter("realm"));
-        if (realm==null) {
+        if (realm == null) {
             throw new NotFoundException("notFound.realm");
         }
 
@@ -145,7 +146,7 @@ public class ApiResource {
     protected RealmModel getRealm(AdminAuth auth, String realmName) {
         RealmManager realmManager = new RealmManager(session);
         RealmModel realm = realmManager.getRealmByName(realmName);
-        if (realm==null) {
+        if (realm == null) {
             LOG.infof("Can't find realm %s", realmName);
             throw new NotFoundException("notFound.realm");
         }
@@ -159,12 +160,12 @@ public class ApiResource {
 
     protected UserModel getUser(RealmModel realm, String userId, AdminAuth auth) {
         UserModel user = session.userStorageManager().getUserById(userId, realm);
-        if (user==null) {
+        if (user == null) {
             LOG.infof("Can't find user %s", userId);
             throw new NotFoundException("notFound.user");
         }
 
-        if (auth!=null) {
+        if (auth != null) {
             AdminPermissionEvaluator realmAuth = AdminPermissions.evaluator(session, realm, auth);
             realmAuth.users().requireManage(user);
         }

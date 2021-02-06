@@ -1,7 +1,6 @@
 package io.cloudtrust.keycloak.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.cloudtrust.keycloak.test.util.OidcTokenProvider;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -14,7 +13,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.representations.idm.*;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RealmRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.test.FluentTestsHelper;
 import org.keycloak.testsuite.util.OAuthClient;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +24,9 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public abstract class AuthenticatorTest {
@@ -97,7 +100,8 @@ public abstract class AuthenticatorTest {
 
     /**
      * Creates an enabled user with email=username+"@test.com" and password="password+"
-     * @param username Username
+     *
+     * @param username    Username
      * @param userUpdater Lambda used to customize the user before it is created
      */
     public void createUser(String username, Consumer<UserRepresentation> userUpdater) {

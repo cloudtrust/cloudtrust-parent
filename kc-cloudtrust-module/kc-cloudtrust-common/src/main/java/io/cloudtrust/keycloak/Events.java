@@ -20,13 +20,13 @@ public class Events {
 
     public static EventBuilder cloneEvent(EventBuilder event, String authType, UserModel user, String eventType, String credentialId) {
         return event.clone()
-            .event(EventType.CUSTOM_REQUIRED_ACTION)
-            .user(user)
-            .detail(CT_EVENT_TYPE, eventType)
-            .detail(Details.AUTH_TYPE, authType)
-            .detail(CT_EVENT_USERNAME, user.getUsername())
-            .detail(CT_EVENT_STATUS, String.valueOf(user.isEnabled()))
-            .detail(CT_EVENT_CREDENTIAL_ID, credentialId);
+                .event(EventType.CUSTOM_REQUIRED_ACTION)
+                .user(user)
+                .detail(CT_EVENT_TYPE, eventType)
+                .detail(Details.AUTH_TYPE, authType)
+                .detail(CT_EVENT_USERNAME, user.getUsername())
+                .detail(CT_EVENT_STATUS, String.valueOf(user.isEnabled()))
+                .detail(CT_EVENT_CREDENTIAL_ID, credentialId);
     }
 
     public static EventBuilder cloneEvent(AuthenticationFlowContext context, String authType, UserModel user, String eventType, String credentialId) {
@@ -43,7 +43,7 @@ public class Events {
 
     public static EventBuilder updateEvent(AuthenticationFlowContext context) {
         return context.getEvent()
-            .user(context.getUser())
-            .detail(Details.AUTH_TYPE, "OTP-Push");
+                .user(context.getUser())
+                .detail(Details.AUTH_TYPE, "OTP-Push");
     }
 }

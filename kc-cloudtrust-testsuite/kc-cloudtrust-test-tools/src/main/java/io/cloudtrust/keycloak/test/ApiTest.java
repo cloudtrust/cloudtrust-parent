@@ -1,13 +1,17 @@
 package io.cloudtrust.keycloak.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -103,27 +107,54 @@ public abstract class ApiTest {
     }
 
     protected String callApi(String method, String apiPath, List<NameValuePair> nvps) throws IOException, URISyntaxException {
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()){
-            URIBuilder uriBuilder = new URIBuilder(KEYCLOAK_URL + apiPath );
+        return callApi(method, apiPath, nvps, null);
+    }
+
+    protected String callApiJSON(String method, String apiPath, Object jsonable) throws IOException, URISyntaxException {
+        return callApiJSON(method, apiPath, new ArrayList<>(), jsonable);
+    }
+
+    protected String callApiJSON(String method, String apiPath, List<NameValuePair> nvps, Object jsonable) throws IOException, URISyntaxException {
+        String json = new ObjectMapper().writeValueAsString(jsonable);
+        StringEntity requestEntity = new StringEntity(json, ContentType.APPLICATION_JSON);
+        return callApi(method, apiPath, nvps, requestEntity);
+    }
+
+    protected String callApi(String method, String apiPath, List<NameValuePair> nvps, HttpEntity entity) throws IOException, URISyntaxException {
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            URIBuilder uriBuilder = new URIBuilder(KEYCLOAK_URL + apiPath);
             uriBuilder.addParameters(nvps);
-            HttpRequestBase get = createHttpRequest(method, uriBuilder.build());
+            HttpRequestBase get = createHttpRequest(method, uriBuilder.build(), entity);
             get.addHeader("Authorization", "Bearer " + token);
 
             HttpResponse response = client.execute(get);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                throw new HttpResponseException(response.getStatusLine().getStatusCode(), "call failed: "+ response.getStatusLine().getStatusCode());
+            if (response.getStatusLine().getStatusCode() / 100 != 2) {
+                throw new HttpResponseException(response.getStatusLine().getStatusCode(), "call failed: " + response.getStatusLine().getStatusCode());
             }
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))){
-                return reader.lines().collect(Collectors.joining());
+            if (response.getEntity() != null) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
+                    return reader.lines().collect(Collectors.joining());
+                }
             }
+            return null;
         }
     }
 
-    private HttpRequestBase createHttpRequest(String method, URI uri) throws HttpResponseException {
+    private HttpRequestBase createHttpRequest(String method, URI uri, HttpEntity entity) throws HttpResponseException {
         switch (method) {
-        case "GET" : return new HttpGet(uri);
-        case "PUT" : return new HttpPut(uri);
-        default: throw new HttpResponseException(405, "Unsupported method "+method);
+            case "GET":
+                return new HttpGet(uri);
+            case "PUT":
+                return addBodyToHttpRequest(new HttpPut(uri), entity);
+            default:
+                throw new HttpResponseException(405, "Unsupported method " + method);
         }
+    }
+
+    private HttpRequestBase addBodyToHttpRequest(HttpEntityEnclosingRequestBase httpRequest, HttpEntity entity) {
+        if (entity != null) {
+            httpRequest.setEntity(entity);
+        }
+        return httpRequest;
     }
 }
