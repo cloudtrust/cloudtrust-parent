@@ -34,7 +34,7 @@
         <keycloak.version>14.0.0</keycloak.version>
         <jfreechart.version>1.5.1</jfreechart.version>
         <systemrules.version>1.19.0</systemrules.version>
-        <cloudtrust.version>2.0.0</cloudtrust.version>
+        <cloudtrust.version>2.1.0</cloudtrust.version>
         <spotbugs.version>4.2.3</spotbugs.version>
         <owasp-check.version>6.0.3</owasp-check.version>
     </properties>
