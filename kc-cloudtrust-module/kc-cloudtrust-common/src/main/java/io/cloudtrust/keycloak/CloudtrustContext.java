@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TrustIDContext {
+public class CloudtrustContext {
     private String credentialId;
     private List<AlternativeAuthenticator> credentials;
 

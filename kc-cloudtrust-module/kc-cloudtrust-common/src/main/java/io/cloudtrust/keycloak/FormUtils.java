@@ -1,19 +1,21 @@
 package io.cloudtrust.keycloak;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationSelectionOption;
+import org.keycloak.credential.CredentialModel;
 import org.keycloak.credential.CredentialProvider;
 import org.keycloak.credential.CredentialTypeMetadata;
 import org.keycloak.credential.CredentialTypeMetadataContext;
 import org.keycloak.forms.login.LoginFormsProvider;
 import org.keycloak.models.AuthenticationExecutionModel;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * While upgrading from KC8 to KC14, we noticed changes in the way login pages are managed.
@@ -22,14 +24,30 @@ import org.keycloak.models.AuthenticationExecutionModel;
  * of choosing alternative credentials
  *
  * @author fpe
- *
  */
 public class FormUtils {
     private FormUtils() {
     }
 
+    private static AlternativeAuthenticator toAlternativeAuthenticator(AuthenticationSelectionOption altOpt) {
+        return new AlternativeAuthenticator(altOpt.getAuthenticationExecution(), new CredentialModel());
+    }
+
+    public static CloudtrustRegisteringContext createCloudtrustRegisteringContext(List<AuthenticationSelectionOption> authSelections) {
+        CloudtrustRegisteringContext regCtx = new CloudtrustRegisteringContext();
+        if (authSelections != null) {
+            regCtx.setAlternatives(authSelections.stream()
+                    .map(FormUtils::toAlternativeAuthenticator)
+                    .collect(Collectors.toList()));
+        } else {
+            regCtx.setAlternatives(Collections.emptyList());
+        }
+        return regCtx;
+    }
+
     public static LoginFormsProvider getFormWithAuthenticators(AuthenticationFlowContext context, String selectedCredentialId) {
-        return getFormWithAuthenticators(context, selectedCredentialId, u -> {});
+        return getFormWithAuthenticators(context, selectedCredentialId, u -> {
+        });
     }
 
     public static LoginFormsProvider getFormWithAuthenticators(AuthenticationFlowContext context, String selectedCredentialId, Consumer<AlternativeAuthenticator> optionUpdater) {
@@ -65,11 +83,11 @@ public class FormUtils {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        TrustIDContext ctx = new TrustIDContext();
+        CloudtrustContext ctx = new CloudtrustContext();
         ctx.setCredentialId(selectedCredentialId);
         ctx.setCredentials(credentials);
 
-        form.setAttribute("trustIdContext", ctx);
+        form.setAttribute("ctContext", ctx);
 
         return form;
     }
