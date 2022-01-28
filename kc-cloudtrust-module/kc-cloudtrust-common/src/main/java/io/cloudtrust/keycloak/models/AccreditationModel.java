@@ -1,7 +1,9 @@
 package io.cloudtrust.keycloak.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jboss.logging.Logger;
 
@@ -13,6 +15,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(value = "creationMillis")
 public class AccreditationModel {
     private static final Logger LOG = Logger.getLogger(AccreditationModel.class);
     private final DateFormat cloudtrustDateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -73,5 +76,9 @@ public class AccreditationModel {
             }
         }
         return null;
+    }
+
+    public String toJSON() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(this);
     }
 }
