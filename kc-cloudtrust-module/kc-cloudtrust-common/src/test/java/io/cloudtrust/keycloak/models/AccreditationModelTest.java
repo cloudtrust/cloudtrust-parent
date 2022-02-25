@@ -1,31 +1,32 @@
 package io.cloudtrust.keycloak.models;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Assert;
-import org.junit.Test;
 
-public class AccreditationModelTest {
+class AccreditationModelTest {
     @Test
-    public void tryParseTest() {
+    void tryParseTest() {
         AccreditationModel accred = AccreditationModel.tryParse("{\"type\": \"value type\"}");
-        Assert.assertNotNull(accred);
-        Assert.assertEquals("value type", accred.getType());
-        Assert.assertNull(accred.getExpiryDate());
-        Assert.assertNull(accred.isRevoked());
+        Assertions.assertNotNull(accred);
+        Assertions.assertEquals("value type", accred.getType());
+        Assertions.assertNull(accred.getExpiryDate());
+        Assertions.assertNull(accred.isRevoked());
     }
 
     @Test
-    public void tryParseNullTest() {
-        Assert.assertNull(AccreditationModel.tryParse(null));
+    void tryParseNullTest() {
+        Assertions.assertNull(AccreditationModel.tryParse(null));
     }
 
     @Test
-    public void tryParseFailsTest() {
-        Assert.assertNull(AccreditationModel.tryParse("{"));
+    void tryParseFailsTest() {
+        Assertions.assertNull(AccreditationModel.tryParse("{"));
     }
 
     @Test
-    public void isValidTest() {
+    void isValidTest() {
         assertInvalid("{}");
         assertInvalid("{\"type\":\"XXX\"}");
         assertInvalid("{\"type\":\"XXX\", \"revoked\": true}");
@@ -38,25 +39,25 @@ public class AccreditationModelTest {
 
     private void assertInvalid(String json) {
         AccreditationModel accred = AccreditationModel.tryParse(json);
-        Assert.assertNotNull(accred);
-        Assert.assertFalse(accred.isValid());
+        Assertions.assertNotNull(accred);
+        Assertions.assertFalse(accred.isValid());
     }
 
     private void assertValid(String json) {
         AccreditationModel accred = AccreditationModel.tryParse(json);
-        Assert.assertNotNull(accred);
-        Assert.assertTrue(accred.isValid());
+        Assertions.assertNotNull(accred);
+        Assertions.assertTrue(accred.isValid());
     }
 
     @Test
-    public void toJSONTest() throws JsonProcessingException {
+    void toJSONTest() throws JsonProcessingException {
         // creationMillis should be ignored from JSON object and should not be transmitted by mappers
         Long timestamp = 1643379990000L;
         String date = "31.12.2039";
         String json = "{\"type\":\"XXX\", \"expiryDate\": \"DATE\", \"creationMillis\": VALUE}".replace("VALUE", Long.toString(timestamp)).replace("DATE", date);
 
         String updated = AccreditationModel.tryParse(json).toJSON();
-        Assert.assertFalse(updated.contains(Long.toString(timestamp))); // timestamp (de/)serialized
-        Assert.assertTrue(updated.contains("31.12.2039"));
+        Assertions.assertFalse(updated.contains(Long.toString(timestamp))); // timestamp (de/)serialized
+        Assertions.assertTrue(updated.contains("31.12.2039"));
     }
 }

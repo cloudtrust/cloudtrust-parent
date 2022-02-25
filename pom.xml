@@ -11,7 +11,7 @@
         <module>cloudtrust-common</module>
         <module>cloudtrust-test-tools</module>
         <module>kc-cloudtrust-module</module>
-        <!--module>kc-cloudtrust-testsuite</module-->
+        <module>kc-cloudtrust-testsuite</module>
     </modules>
 
     <properties>
@@ -21,7 +21,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <junit.version>4.13.2</junit.version>
+        <junit.version>5.8.2</junit.version>
+        <junit.platform.version>1.8.1</junit.platform.version>
         <version.pmd.plugin>3.13.0</version.pmd.plugin>
         <jacoco.version>0.8.7</jacoco.version>
         <spotbugs.version>4.2.3</spotbugs.version>

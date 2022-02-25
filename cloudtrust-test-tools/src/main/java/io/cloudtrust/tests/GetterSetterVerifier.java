@@ -1,6 +1,6 @@
 package io.cloudtrust.tests;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -165,7 +165,7 @@ public class GetterSetterVerifier<T> {
         setter.invoke(target, setValue);
         final Object getValue = getter.invoke(target);
 
-        Assert.assertEquals(property.getDisplayName() + " getter / setter do not produce the same result.", setValue, getValue);
+        Assertions.assertEquals(setValue, getValue, property.getDisplayName() + " getter / setter do not produce the same result.");
     }
 
     private Object constructInstance(final Class<?> type)

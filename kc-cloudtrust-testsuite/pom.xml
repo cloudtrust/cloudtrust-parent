@@ -3,15 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.keycloak.testsuite</groupId>
-        <artifactId>integration-arquillian-tests</artifactId>
-        <version>17.0.1</version>
-        <relativePath/>
+        <groupId>io.cloudtrust</groupId>
+        <artifactId>cloudtrust-parent</artifactId>
+        <version>3.0.0</version>
     </parent>
 
-    <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-testsuite</artifactId>
-    <version>17.0.1</version>
+    <version>18.0.0</version>
     <description>Parent for testing of keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -31,156 +29,66 @@
         <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <keycloak.version>17.0.1</keycloak.version>
-        <jfreechart.version>1.5.1</jfreechart.version>
-        <systemrules.version>1.19.0</systemrules.version>
         <cloudtrust.version>3.0.0</cloudtrust.version>
+        <keycloak.version>18.0.0</keycloak.version>
+        <arquillian-graphene.version>2.5.4</arquillian-graphene.version>
+        <undertow.version>1.0.0.Alpha2</undertow.version>
+        <resteasy.version>4.7.5.Final</resteasy.version>
+        <jackson.version>2.12.4</jackson.version>
+        <jbosslogging.version>3.4.1.Final</jbosslogging.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <greenmail.version>1.6.8</greenmail.version>
+        <systemlambda.version>1.2.1</systemlambda.version>
+        <cloudtrust.version>3.0.0</cloudtrust.version>
+        <selenium.version>4.1.2</selenium.version>
+		<htmlunit.version>3.58.0</htmlunit.version>
         <spotbugs.version>4.2.3</spotbugs.version>
         <owasp-check.version>6.5.3</owasp-check.version>
         <hamcrest.version>1.3</hamcrest.version>
+        <junit.version>5.8.2</junit.version>
+        <junit.platform.version>1.8.1</junit.platform.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>io.cloudtrust</groupId>
             <artifactId>cloudtrust-common</artifactId>
-            <version>${cloudtrust.version}</version>
-        </dependency>
-        <!-- All following dependencies are to run a local keycloak in arquillian for tests
-            Many of these dependencies can be omitted (for example email server or database connectors),
-            but it is recommended to include them all, since their scope is "test" anyway.
-        -->
-
-        <!--test dependencies-->
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-test-helper</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
-        <!--arquillian-->
-        <dependency>
-            <groupId>org.wildfly.extras.creaper</groupId>
-            <artifactId>creaper-commands</artifactId>
-            <version>${version.org.wildfly.extras.creaper}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.graphene</groupId>
-            <artifactId>graphene-webdriver</artifactId>
-            <version>${arquillian-graphene.version}</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-phantom-driver</artifactId>
-            <version>1.2.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.graphene</groupId>
-            <artifactId>arquillian-browser-screenshooter</artifactId>
-            <version>${arquillian-graphene.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>io.appium</groupId>
-            <artifactId>java-client</artifactId>
-            <version>${appium.client.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>${jfreechart.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak.testsuite</groupId>
-            <artifactId>integration-arquillian-test-apps-servlets</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.keycloak.testsuite</groupId>
-            <artifactId>integration-arquillian-util</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-core</artifactId>
-            <version>2.7.0</version>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>htmlunit-driver</artifactId>
+            <version>${htmlunit.version}</version>
         </dependency>
 
         <!-- Email Test Server -->
         <dependency>
             <groupId>com.icegreen</groupId>
-            <artifactId>greenmail</artifactId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>${greenmail.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.subethamail</groupId>
-            <artifactId>subethasmtp</artifactId>
-            <exclusions>
                 <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Keycloak deps for tests -->
-
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-dependencies-server-all</artifactId>
-            <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
+                	<groupId>junit</groupId>
+                	<artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -188,115 +96,78 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-client-registration-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-authz-client</artifactId>
-        </dependency>
-
-        <!--UNDERTOW-->
-
-        <dependency>
-            <groupId>org.keycloak.testsuite</groupId>
-            <artifactId>integration-arquillian-servers-auth-server-undertow</artifactId>
             <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-services</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-server-spi-private</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>3.15.3.Final</version>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>undertow-embedded</artifactId>
+            <version>${undertow.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-undertow</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson2-provider</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Database connectors -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.driver.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>${mariadb.driver.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- CLI -->
-        <!--
-          - This dependency must come after org.bouncycastle dependencies since it contains BC classes,
-          - and MAC signature check on classes would fail otherwise with:
-          - 'java.lang.SecurityException: JCE cannot authenticate the provider BC'
-        -->
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-client-cli-dist</artifactId>
-            <type>zip</type>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.enterprise</artifactId>
-            <scope>test</scope>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+		</dependency>
+        <dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-runner</artifactId>
+            <version>${junit.platform.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>junit</groupId>
+            		<artifactId>junit</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
             <!-- env variables for unit tests -->
-            <dependency>
+            <!--dependency>
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-rules</artifactId>
                 <version>${systemrules.version}</version>
-            </dependency>
+            </dependency-->
         </dependencies>
     </dependencyManagement>
 
@@ -304,69 +175,11 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.wildfly.plugins</groupId>
-                    <artifactId>wildfly-maven-plugin</artifactId>
-                    <version>${version.wildfly.maven.plugin}</version>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.jboss.as.plugins</groupId>
-                    <artifactId>jboss-as-maven-plugin</artifactId>
-                    <version>${version.jboss.maven.plugin}</version>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.eirslett</groupId>
-                    <artifactId>frontend-maven-plugin</artifactId>
-                    <version>${frontend.plugin.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs.version}</version>
                     <configuration>
                         <skip>true</skip>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M3</version>
-                    <executions>
-                        <execution>
-                            <id>default-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <configuration>
-                                <systemPropertyVariables>
-                                    <arquillian.xml>src/test/resources/arquillian.xml</arquillian.xml>
-                                </systemPropertyVariables>
-                                <properties>
-                                    <property>
-                                        <name>listener</name>
-                                        <value>org.junit.runner.notification.RunListener</value>
-                                    </property>
-                                </properties>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <systemPropertyVariables>
-                            <arquillian.xml>src/test/resources/arquillian.xml</arquillian.xml>
-                            <log4j.configuration>file:${project.build.directory}/test-classes/log4j.properties</log4j.configuration>
-                        </systemPropertyVariables>
-                        <properties>
-                            <property>
-                                <name>listener</name>
-                                <value>org.junit.runner.notification.RunListener</value>
-                            </property>
-                        </properties>
-                        <argLine>${argLine}</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -379,51 +192,38 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <configuration>
                         <skipIfEmpty>true</skipIfEmpty>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
                     <executions>
                         <execution>
-                            <id>copy-common-dependencies</id>
-                            <phase>generate-resources</phase>
+                            <id>unpack-keycloak-server-dist</id>
+                            <phase>test-compile</phase>
                             <goals>
-                                <goal>copy-resources</goal>
+                                <goal>unpack</goal>
                             </goals>
                             <configuration>
-                                <skip>false</skip>
-                                <outputDirectory>${project.build.directory}/dependency</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>src/test/resources</directory>
-                                        <includes>
-                                            <include>arquillian.xml</include>
-                                            <include>wildfly-config.xml</include>
-                                            <include>log4j.properties</include>
-                                            <include>keycloak-add-user.json</include>
-                                        </includes>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>copy-processed-truststore-to-app-server</id>
-                            <phase>process-test-resources</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${app.server.keystore.dir}</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>${dependency.keystore.root}</directory>
-                                    </resource>
-                                </resources>
-                                <overwrite>true</overwrite>
-                                <skip>${app.server.skip.unpack}</skip>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.keycloak</groupId>
+                                        <artifactId>keycloak-quarkus-dist</artifactId>
+                                        <version>${keycloak.version}</version>
+                                        <type>zip</type>
+                                        <overWrite>true</overWrite>
+                                        <outputDirectory>${project.build.directory}</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
                             </configuration>
                         </execution>
                     </executions>

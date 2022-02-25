@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.cloudtrust</groupId>
         <artifactId>kc-cloudtrust-testsuite</artifactId>
-        <version>17.0.1</version>
+        <version>18.0.0</version>
     </parent>
 
     <artifactId>kc-cloudtrust-test-tools</artifactId>
@@ -18,21 +18,52 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <junit.version>4.13.1</junit.version>
+        <jackson.version>2.13.2</jackson.version>
     </properties>
 
     <dependencies>
-        <!--keycloak -->
-        <dependency>
-            <groupId>org.keycloak.testsuite</groupId>
-            <artifactId>integration-arquillian-tests-base</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
         <!-- Third party libraries -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${hamcrest.version}</version>
+        </dependency>
+        <!--dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+        </dependency-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-runner</artifactId>
+			<version>${junit.platform.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
+        </dependency>
+        <dependency>
+        	<groupId>com.icegreen</groupId>
+        	<artifactId>greenmail-junit5</artifactId>
+        	<version>${greenmail.version}</version>
+        	<exclusions>
+        		<exclusion>
+        			<groupId>org.slf4j</groupId>
+        			<artifactId>slf4j-api</artifactId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
     </dependencies>
 </project>

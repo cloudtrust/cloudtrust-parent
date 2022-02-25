@@ -1,9 +1,11 @@
 package io.cloudtrust.tests;
 
-import io.cloudtrust.tests.GetterSetterVerifier.InstanceConstructor;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class GetterSetterVerifierTest {
+import io.cloudtrust.tests.GetterSetterVerifier.InstanceConstructor;
+
+class GetterSetterVerifierTest {
     public static class NoDefaultConstrutor {
         public NoDefaultConstrutor(int unused) {
         }
@@ -46,23 +48,25 @@ public class GetterSetterVerifierTest {
         }
     }
 
-    @Test(expected = AssertionError.class)
-    public void validBeanFailureTest() {
-        GetterSetterVerifier.forClass(ValidBean.class).usesDefaultConstructors().verify();
+    @Test
+    void validBeanFailureTest() {
+    	GetterSetterVerifier<ValidBean> verifier = GetterSetterVerifier.forClass(ValidBean.class).usesDefaultConstructors();
+        Assertions.assertThrows(AssertionError.class, () -> verifier.verify());
     }
 
     @Test
-    public void validBeanSuccessTest() {
+    void validBeanSuccessTest() {
         GetterSetterVerifier.forClass(ValidBean.class).usesDefaultConstructors().usesConstructor(NoDefaultConstrutor.class, ndcConstructor).verify();
     }
 
-    @Test(expected = AssertionError.class)
-    public void invalidBeanFailureTest() {
-        GetterSetterVerifier.forClass(InvalidBean.class).usesDefaultConstructors().verify();
+    @Test
+    void invalidBeanFailureTest() {
+    	GetterSetterVerifier<InvalidBean> verifier = GetterSetterVerifier.forClass(InvalidBean.class).usesDefaultConstructors();
+    	Assertions.assertThrows(AssertionError.class, () -> verifier.verify());
     }
 
     @Test
-    public void invalidBeanSuccessTest() {
+    void invalidBeanSuccessTest() {
         GetterSetterVerifier.forClass(InvalidBean.class).usesDefaultConstructors().include("string").verify();
         GetterSetterVerifier.forClass(InvalidBean.class).usesDefaultConstructors().exclude("integer").usesConstructor(NoDefaultConstrutor.class, ndcConstructor).verify();
         GetterSetterVerifier.forClass(InvalidBean.class).usesDefaultConstructors().include("string").include("character").usesConstructor(NoDefaultConstrutor.class, ndcConstructor).verify();

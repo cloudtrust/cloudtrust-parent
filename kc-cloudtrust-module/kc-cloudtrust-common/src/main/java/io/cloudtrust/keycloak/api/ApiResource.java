@@ -48,8 +48,10 @@ public class ApiResource {
         this.authManager = new AppAuthManager();
     }
 
+    @Deprecated
     protected ClientConnection createConnection(HttpServletRequest httpServletRequest) {
-        return new ClientConnection() {
+    	return this.session.getContext().getConnection();
+        /*return new ClientConnection() {
             public String getRemoteAddr() {
                 return httpServletRequest.getRemoteAddr();
             }
@@ -69,7 +71,7 @@ public class ApiResource {
             public int getLocalPort() {
                 return httpServletRequest.getLocalPort();
             }
-        };
+        };*/
     }
 
     protected AdminAuth authenticateRealmAdminRequest() {
@@ -136,7 +138,7 @@ public class ApiResource {
     }
 
     protected String getPathParameter(String name) {
-        return request.getUri().getPathParameters().getFirst(name);
+        return session.getContext().getUri().getPathParameters().getFirst(name);
     }
 
     protected RealmModel getRealmFromURIPath() {
