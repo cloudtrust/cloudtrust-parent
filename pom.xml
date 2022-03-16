@@ -4,14 +4,14 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>cloudtrust-parent</artifactId>
-    <version>2.1.0</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>cloudtrust-common</module>
         <module>cloudtrust-test-tools</module>
         <module>kc-cloudtrust-module</module>
-        <module>kc-cloudtrust-testsuite</module>
+        <!--module>kc-cloudtrust-testsuite</module-->
     </modules>
 
     <properties>

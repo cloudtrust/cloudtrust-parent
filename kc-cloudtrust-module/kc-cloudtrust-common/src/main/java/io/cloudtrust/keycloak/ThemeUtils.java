@@ -35,8 +35,9 @@ public class ThemeUtils {
                 return findThemeByName(session, type, realm.getEmailTheme());
             case LOGIN:
                 return findThemeByName(session, type, realm.getLoginTheme());
+            default:
+            	return null;
         }
-        return null;
     }
 
     /**
