@@ -20,7 +20,7 @@ public class ThemeUtils {
      * Look for the theme of the current realm
      *
      * @param session The Keycloak session
-     * @param type Theme type
+     * @param type    Theme type
      * @return A type (if any was found)
      * @throws IOException
      */
@@ -35,16 +35,17 @@ public class ThemeUtils {
                 return findThemeByName(session, type, realm.getEmailTheme());
             case LOGIN:
                 return findThemeByName(session, type, realm.getLoginTheme());
+            default:
+                return null;
         }
-        return null;
     }
 
     /**
      * Look for a specific theme
      *
      * @param session The Keycloak session
-     * @param type Theme type
-     * @param name The theme name
+     * @param type    Theme type
+     * @param name    The theme name
      * @return A type (if any was found)
      * @throws IOException
      */

@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OidcTokenProvider {
-    private String keycloakURL;
-    private String oidcAuthPath;
-    private String basicAuth;
+    private final String keycloakURL;
+    private final String oidcAuthPath;
+    private final String basicAuth;
 
     public OidcTokenProvider(String keycloakURL, String oidcAuthPath, String username, String password) {
         this.keycloakURL = keycloakURL;

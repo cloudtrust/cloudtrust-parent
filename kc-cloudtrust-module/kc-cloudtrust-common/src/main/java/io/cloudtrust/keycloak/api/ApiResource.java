@@ -20,7 +20,6 @@ import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 import org.keycloak.services.resources.admin.permissions.AdminPermissions;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -48,32 +47,8 @@ public class ApiResource {
         this.authManager = new AppAuthManager();
     }
 
-    protected ClientConnection createConnection(HttpServletRequest httpServletRequest) {
-        return new ClientConnection() {
-            public String getRemoteAddr() {
-                return httpServletRequest.getRemoteAddr();
-            }
-
-            public String getRemoteHost() {
-                return httpServletRequest.getRemoteHost();
-            }
-
-            public int getRemotePort() {
-                return httpServletRequest.getRemotePort();
-            }
-
-            public String getLocalAddr() {
-                return httpServletRequest.getLocalAddr();
-            }
-
-            public int getLocalPort() {
-                return httpServletRequest.getLocalPort();
-            }
-        };
-    }
-
     protected AdminAuth authenticateRealmAdminRequest() {
-        return authenticateRealmAdminRequest(request.getHttpHeaders());
+        return authenticateRealmAdminRequest(this.session.getContext().getRequestHeaders());
     }
 
     /**
@@ -136,7 +111,7 @@ public class ApiResource {
     }
 
     protected String getPathParameter(String name) {
-        return request.getUri().getPathParameters().getFirst(name);
+        return session.getContext().getUri().getPathParameters().getFirst(name);
     }
 
     protected RealmModel getRealmFromURIPath() {

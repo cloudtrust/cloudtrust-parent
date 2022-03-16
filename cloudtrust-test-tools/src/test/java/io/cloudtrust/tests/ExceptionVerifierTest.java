@@ -1,8 +1,9 @@
 package io.cloudtrust.tests;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class ExceptionVerifierTest {
+class ExceptionVerifierTest {
     public static class MyValidException extends Exception {
         private static final long serialVersionUID = -1505973559678938268L;
 
@@ -28,12 +29,12 @@ public class ExceptionVerifierTest {
     }
 
     @Test
-    public void validationSuccessTest() {
+    void validationSuccessTest() {
         ExceptionVerifier.verify(MyValidException.class);
     }
 
-    @Test(expected = AssertionError.class)
-    public void validationFailureTest() {
-        ExceptionVerifier.verify(MyInvalidException.class);
+    @Test
+    void validationFailureTest() {
+        Assertions.assertThrows(AssertionError.class, () -> ExceptionVerifier.verify(MyInvalidException.class));
     }
 }

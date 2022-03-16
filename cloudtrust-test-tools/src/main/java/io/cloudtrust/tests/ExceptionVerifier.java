@@ -1,6 +1,6 @@
 package io.cloudtrust.tests;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -20,11 +20,11 @@ public class ExceptionVerifier {
         String message = "the message";
         Throwable cause = new Throwable("cause");
 
-        forConstructor(clazz, cl -> cl.newInstance(message), e -> Assert.assertEquals(message, e.getMessage()), String.class);
-        forConstructor(clazz, cl -> cl.newInstance(cause), e -> Assert.assertEquals(cause, e.getCause()), Throwable.class);
+        forConstructor(clazz, cl -> cl.newInstance(message), e -> Assertions.assertEquals(message, e.getMessage()), String.class);
+        forConstructor(clazz, cl -> cl.newInstance(cause), e -> Assertions.assertEquals(cause, e.getCause()), Throwable.class);
         forConstructor(clazz, cl -> cl.newInstance(message, cause), e -> {
-            Assert.assertEquals(message, e.getMessage());
-            Assert.assertEquals(cause, e.getCause());
+            Assertions.assertEquals(message, e.getMessage());
+            Assertions.assertEquals(cause, e.getCause());
         }, String.class, Throwable.class);
     }
 
@@ -36,7 +36,7 @@ public class ExceptionVerifier {
         } catch (NoSuchMethodException | SecurityException e) {
             // Ignore non-existing constructor
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            Assert.fail("Could not construct exception: " + e.getMessage());
+            Assertions.fail("Could not construct exception: " + e.getMessage());
         }
     }
 }

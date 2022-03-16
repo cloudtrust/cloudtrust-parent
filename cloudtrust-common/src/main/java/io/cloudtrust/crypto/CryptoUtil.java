@@ -102,7 +102,9 @@ public class CryptoUtil {
      * @throws IllegalBlockSizeException thrown if there's a problem with the submitted data
      */
     public static byte[] gcmDecryptData(SecretKey aesKey, String encryptedData) throws BadPaddingException, IllegalBlockSizeException {
-        if (encryptedData == null) return null;
+        if (encryptedData == null) {
+            return null;
+        }
         ByteBuffer gcmData = ByteBuffer.wrap(Base64.getDecoder().decode(encryptedData));
         byte[] iv = new byte[IV_SIZE];
         gcmData.get(iv);
@@ -211,7 +213,7 @@ public class CryptoUtil {
         try {
             if (CURRENT_DB_ENCRYPTION_KEY == null) {
                 List<AesKeyEntry> keys = loadKeysFromEnvironment(DB_ENCRYPTION_KEY_ENV_VAR_NAME, aesKeysTypeRef);
-                if (keys.size() == 0) {
+                if (keys.isEmpty()) {
                     throw new IllegalStateException("Cannot find any appropriate key from environment variable " +
                             DB_ENCRYPTION_KEY_ENV_VAR_NAME);
                 }
@@ -230,7 +232,7 @@ public class CryptoUtil {
         try {
             if (CURRENT_DB_HMAC_KEY == null) {
                 List<HmacKeyEntry> keys = loadKeysFromEnvironment(DB_HMAC_KEY_ENV_VAR_NAME, hmacKeysTypeRef);
-                if (keys.size() == 0) {
+                if (keys.isEmpty()) {
                     throw new IllegalStateException("Cannot find an appropriate key from environment variable " +
                             DB_HMAC_KEY_ENV_VAR_NAME);
                 }
