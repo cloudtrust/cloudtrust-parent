@@ -34,7 +34,7 @@
         <arquillian-graphene.version>2.5.4</arquillian-graphene.version>
         <undertow.version>1.0.0.Alpha2</undertow.version>
         <resteasy.version>4.7.5.Final</resteasy.version>
-        <jackson.version>2.12.4</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
         <jbosslogging.version>3.4.1.Final</jbosslogging.version>
         <slf4j.version>1.7.36</slf4j.version>
         <greenmail.version>1.6.8</greenmail.version>
