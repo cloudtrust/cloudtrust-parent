@@ -47,6 +47,8 @@ public class ConfigurationFactory {
             new ConfigurationReader().read(is, (s, k, v) -> {
                 if ("build-arguments".equals(s)) {
                     cfg.addBuildArgument("--" + k + "=" + v);
+                } else if ("exec-arguments".equals(s)) {
+                    cfg.addBuildArgument("--" + k + "=" + v);
                 } else if ("properties".equals(s)) {
                     cfg.addProperty(k, v);
                 } else if ("environment".equals(s)) {
@@ -57,6 +59,8 @@ public class ConfigurationFactory {
             }, (s, v) -> {
                 if ("modules".equals(s)) {
                     cfg.addModuleJar(v);
+                } else if ("exec-arguments".equals(s)) {
+                    cfg.addBuildArgument("--" + v);
                 } else if ("classpath".equals(s)) {
                     cfg.addClasspath(v);
                 } else {

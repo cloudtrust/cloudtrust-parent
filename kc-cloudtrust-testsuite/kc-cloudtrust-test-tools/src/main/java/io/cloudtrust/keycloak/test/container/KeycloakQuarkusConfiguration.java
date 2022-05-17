@@ -25,6 +25,7 @@ public class KeycloakQuarkusConfiguration {
     private final List<File> jarFiles = new ArrayList<>();
     private final List<File> classpath = new ArrayList<>();
     private final List<String> buildArguments = new ArrayList<>();
+    private final List<String> execArguments = new ArrayList<>();
     private final Map<String, String> environment = new HashMap<>();
     private final Map<String, String> runProperties = new HashMap<>();
     private String hostname = null;
@@ -144,6 +145,11 @@ public class KeycloakQuarkusConfiguration {
 
         public KeycloakQuarkusConfigurationBuilder addBuildArgument(String arg) {
             cfg.buildArguments.add(arg);
+            return this;
+        }
+
+        public KeycloakQuarkusConfigurationBuilder addExecArgument(String arg) {
+            cfg.execArguments.add(arg);
             return this;
         }
 
@@ -269,6 +275,10 @@ public class KeycloakQuarkusConfiguration {
 
     public List<String> getBuildArguments() {
         return this.buildArguments;
+    }
+
+    public List<String> getExecArguments() {
+        return this.execArguments;
     }
 
     public Map<String, String> getProperties() {

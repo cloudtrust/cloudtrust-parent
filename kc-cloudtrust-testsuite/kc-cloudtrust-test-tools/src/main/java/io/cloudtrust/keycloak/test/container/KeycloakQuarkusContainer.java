@@ -203,6 +203,7 @@ public class KeycloakQuarkusContainer {
         List<String> commands = getProcessCommandWithoutArguments();
 
         commands.add("start-dev");
+        commands.addAll(this.configuration.getExecArguments());
 
         log.info("Container args: " + commands);
         return commands.toArray(new String[0]);
