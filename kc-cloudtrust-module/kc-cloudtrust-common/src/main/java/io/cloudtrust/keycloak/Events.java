@@ -15,7 +15,7 @@ public class Events {
     public static final String CT_EVENT_ERROR = "error";
 
     private Events() {
-        // Helper does not need to be instanciated
+        // Helper does not need to be instantiated
     }
 
     public static EventBuilder cloneEvent(EventBuilder event, String authType, UserModel user, String eventType, String credentialId) {
@@ -41,6 +41,12 @@ public class Events {
         cloneEvent(context.getEvent(), authType, user, eventType, credentialId).success();
     }
 
+    /**
+     * How awful! Module specific method should not be in this library.
+     * @param context
+     * @return
+     */
+    @Deprecated
     public static EventBuilder updateEvent(AuthenticationFlowContext context) {
         return context.getEvent()
                 .user(context.getUser())
