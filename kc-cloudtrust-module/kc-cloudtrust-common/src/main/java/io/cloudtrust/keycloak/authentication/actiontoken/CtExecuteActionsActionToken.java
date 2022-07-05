@@ -11,7 +11,9 @@ import java.util.List;
  * Inspired by Keycloak ExecuteActionsActionToken
  */
 public class CtExecuteActionsActionToken extends DefaultActionToken {
-    public static final String TOKEN_TYPE = "ct-execute-actions";
+	private static final long serialVersionUID = -5722756126818795459L;
+
+	public static final String TOKEN_TYPE = "ct-execute-actions";
 
     private static final String CLAIM_EMAIL = "etv";
     private static final String JSON_FIELD_REQUIRED_ACTIONS = "ctrqac";
@@ -33,7 +35,8 @@ public class CtExecuteActionsActionToken extends DefaultActionToken {
     private CtExecuteActionsActionToken() {
     }
 
-    @JsonProperty(value = JSON_FIELD_REQUIRED_ACTIONS)
+    @SuppressWarnings("unchecked")
+	@JsonProperty(value = JSON_FIELD_REQUIRED_ACTIONS)
     public List<String> getRequiredActions() {
         return (List<String>) getOtherClaims().get(JSON_FIELD_REQUIRED_ACTIONS);
     }
