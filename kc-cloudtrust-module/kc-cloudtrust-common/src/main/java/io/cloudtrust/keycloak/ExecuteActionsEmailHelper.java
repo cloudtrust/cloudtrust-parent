@@ -72,13 +72,11 @@ public class ExecuteActionsEmailHelper {
     }
 
     private static void addClaims(UserModel user, List<String> actions, CtExecuteActionsActionToken token) {
-        /* email to validate */
-        if (actions.contains(VERIFY_EMAIL_ACTION)) {
-            String email = StringUtils.defaultIfBlank(user.getFirstAttribute(ATTRB_EMAIL_TO_VALIDATE), user.getEmail());
-            if (StringUtils.isNotBlank(email)) {
-                LOGGER.debugf("Adding email to validate to claim: %s", email);
-                token.setEmailToValidate(email);
-            }
+        /* email to validate: we always add this claim as we already are able to validate an email with email actions even if ct-verify-email is not provided */
+        String email = StringUtils.defaultIfBlank(user.getFirstAttribute(ATTRB_EMAIL_TO_VALIDATE), user.getEmail());
+        if (StringUtils.isNotBlank(email)) {
+            LOGGER.debugf("Adding email to validate to claim: %s", email);
+            token.setEmailToValidate(email);
         }
     }
 }
