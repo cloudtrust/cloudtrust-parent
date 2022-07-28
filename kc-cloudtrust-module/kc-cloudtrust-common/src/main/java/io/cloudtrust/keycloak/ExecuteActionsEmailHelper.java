@@ -6,6 +6,7 @@ import org.jboss.logging.Logger;
 import org.keycloak.common.util.Time;
 import org.keycloak.email.EmailException;
 import org.keycloak.email.EmailTemplateProvider;
+import org.keycloak.email.freemarker.beans.ProfileBean;
 import org.keycloak.models.Constants;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -32,16 +33,6 @@ public class ExecuteActionsEmailHelper {
             clientId = Constants.ACCOUNT_MANAGEMENT_CLIENT_ID;
         }
 
-        if (actions.contains(VERIFY_EMAIL_ACTION) && checkAlreadyUsedEmail(session, realm, user)) {
-            // Can't validate email as another user is already using the specified one
-            Map<String, Object> params = new HashMap<>();
-            session.getProvider(EmailTemplateProvider.class)
-                    .setRealm(realm)
-                    .setUser(user)
-                    .send("notifEmailAlreadyExistsSubject", "notif-email-already-exists.ftl", params);
-            return;
-        }
-
         int expiration = Time.currentTime() + lifespan;
         CtExecuteActionsActionToken token = new CtExecuteActionsActionToken(user.getId(), expiration, actions, redirectUri, clientId);
         addClaims(user, actions, token);
@@ -50,6 +41,18 @@ public class ExecuteActionsEmailHelper {
         builder.queryParam("key", token.serialize(session, realm, session.getContext().getUri()));
 
         String link = builder.build(realm.getName()).toString();
+
+        if (actions.contains(VERIFY_EMAIL_ACTION) && checkAlreadyUsedEmail(session, realm, user)) {
+            // Can't validate email as another user is already using the specified one
+            Map<String, Object> params = new HashMap<>();
+            params.put("user", new ProfileBean(user));
+            params.put("link", link);
+            session.getProvider(EmailTemplateProvider.class)
+                    .setRealm(realm)
+                    .setUser(user)
+                    .send("notifEmailAlreadyExistsSubject", "notif-email-already-exists.ftl", params);
+            return;
+        }
 
         EmailTemplateProvider emailTemplateProv = session.getProvider(EmailTemplateProvider.class)
                 .setAttribute(Constants.TEMPLATE_ATTR_REQUIRED_ACTIONS, token.getRequiredActions());
@@ -64,7 +67,7 @@ public class ExecuteActionsEmailHelper {
 
     private static boolean checkAlreadyUsedEmail(KeycloakSession session, RealmModel realm, UserModel user) {
         String email = user.getFirstAttribute(ATTRB_EMAIL_TO_VALIDATE);
-        if (org.apache.commons.lang.StringUtils.isNotBlank(email)) {
+        if (StringUtils.isNotBlank(email)) {
             UserModel sameEmailUser = session.users().getUserByEmail(realm, email);
             return sameEmailUser != null && !user.getId().equals(sameEmailUser.getId());
         }
