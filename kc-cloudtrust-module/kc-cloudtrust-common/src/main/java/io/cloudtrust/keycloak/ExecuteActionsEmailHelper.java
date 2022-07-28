@@ -13,7 +13,7 @@ import org.keycloak.models.UserModel;
 import org.keycloak.services.resources.LoginActionsService;
 
 import javax.ws.rs.core.UriBuilder;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +34,7 @@ public class ExecuteActionsEmailHelper {
 
         if (actions.contains(VERIFY_EMAIL_ACTION) && checkAlreadyUsedEmail(session, realm, user)) {
             // Can't validate email as another user is already using the specified one
-            Map<String, Object> params = Collections.emptyMap();
+            Map<String, Object> params = new HashMap<>();
             session.getProvider(EmailTemplateProvider.class)
                     .setRealm(realm)
                     .setUser(user)
