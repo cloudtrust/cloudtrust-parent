@@ -46,6 +46,7 @@ public class ExecuteActionsEmailHelper {
             // Can't validate email as another user is already using the specified one
             Map<String, Object> params = new HashMap<>();
             params.put("user", new ProfileBean(user));
+            // Link is used by themes to build static resource (images)
             params.put("link", link);
             session.getProvider(EmailTemplateProvider.class)
                     .setRealm(realm)
