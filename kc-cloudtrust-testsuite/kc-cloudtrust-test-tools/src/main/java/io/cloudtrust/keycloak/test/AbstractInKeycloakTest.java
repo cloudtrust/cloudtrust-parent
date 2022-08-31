@@ -247,7 +247,7 @@ public abstract class AbstractInKeycloakTest {
     }
 
     public List<String> getUserAttribute(String username, String attributeName) {
-        return getUserAttribute(username, attributeName);
+        return getUserAttribute(defaultRealmName, username, attributeName);
     }
 
     public List<String> getUserAttribute(String realmName, String username, String attributeName) {
