@@ -25,6 +25,7 @@ import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.IdentityProviderResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.AdminEventRepresentation;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -282,12 +283,13 @@ public abstract class AbstractInKeycloakTest {
     }
 
     public void setUserAttribute(String realmName, String username, String attributeName, List<String> values) {
-        RealmResource testRealm = getRealm(realmName);
-        String userId = testRealm.users().search(username).get(0).getId();
-        UserResource userRes = testRealm.users().get(userId);
-        UserRepresentation user = userRes.toRepresentation();
+        UsersResource kcUsers = getRealm(realmName).users();
+        UserRepresentation user = kcUsers.search(username).get(0);
+        if (user.getAttributes()==null) {
+            user.setAttributes(new HashMap<>());
+        }
         user.getAttributes().put(attributeName, values);
-        userRes.update(user);
+        kcUsers.get(user.getId()).update(user);
     }
 
     public void removeUserAttribute(String username, String attributeName) {
@@ -295,13 +297,11 @@ public abstract class AbstractInKeycloakTest {
     }
 
     public void removeUserAttribute(String realmName, String username, String attributeName) {
-        RealmResource testRealm = getRealm(realmName);
+        UsersResource kcUsers = getRealm(realmName).users();
         // remove mobile phone from user
-        String userId = testRealm.users().search(username).get(0).getId();
-        UserResource userRes = testRealm.users().get(userId);
-        UserRepresentation user = userRes.toRepresentation();
+        UserRepresentation user = kcUsers.search(username).get(0);
         user.getAttributes().remove(attributeName);
-        userRes.update(user);
+        kcUsers.get(user.getId()).update(user);
     }
 
     public Stream<CredentialRepresentation> getUserCredentials(String username, Predicate<? super CredentialRepresentation> predicate) {

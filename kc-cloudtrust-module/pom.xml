@@ -24,6 +24,7 @@
         <keycloak.version>18.0.0</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
+        <libphonenumber.version>8.13.3</libphonenumber.version>
 
         <mockito.version>2.28.2</mockito.version>
         <junit.version>5.8.2</junit.version>
