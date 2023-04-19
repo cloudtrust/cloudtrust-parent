@@ -3,6 +3,8 @@ package io.cloudtrust.keycloak.test.http;
 import io.cloudtrust.keycloak.test.util.ConsumerExcept;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
+
 import org.jboss.logging.Logger;
 
 import java.util.Map;
@@ -29,14 +31,19 @@ public class HttpServerManager {
     }
 
     public void start(int listenPort, ConsumerExcept<HttpRequestProcessor, Exception> handler) {
-        HttpHandler effectiveHandler = exchange -> {
-            try {
-                handler.accept(new HttpRequestProcessorImpl(exchange));
-            } catch (Exception e) {
-                LOG.error("Failed to process HTTP request", e);
+        startHttpServer(listenPort, new HttpHandler() {
+            public void handleRequest(HttpServerExchange exchange) throws Exception {
+                try {
+                    if (exchange.isInIoThread()) {
+                        exchange.dispatch(this);
+                        return;
+                    }
+                    handler.accept(new HttpRequestProcessorImpl(exchange));
+                } catch (Exception e) {
+                    LOG.error("Failed to process HTTP request", e);
+                }
             }
-        };
-        startHttpServer(listenPort, effectiveHandler);
+        });
     }
 
     public void startHttpServer(HttpHandler handler) {
