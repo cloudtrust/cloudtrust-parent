@@ -36,8 +36,8 @@
         <junit.platform.version>1.9.2</junit.platform.version>
         <hamcrest.version>1.3</hamcrest.version>
         <version.pmd.plugin>3.13.0</version.pmd.plugin>
-        <jacoco.version>0.8.8</jacoco.version>
-        <spotbugs.version>4.7.3.3</spotbugs.version>
+        <jacoco.version>0.8.11</jacoco.version>
+        <spotbugs.version>4.8.1.0</spotbugs.version>
         <fb-contrib.version>7.6.0</fb-contrib.version>
         <findsecbugs.version>1.12.0</findsecbugs.version>
         <owasp-check.version>8.2.1</owasp-check.version>
