@@ -5,11 +5,11 @@
     <parent>
         <groupId>io.cloudtrust</groupId>
         <artifactId>cloudtrust-parent</artifactId>
-        <version>4.0.2-SNAPSHOT</version>
+        <version>4.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>kc-cloudtrust-testsuite</artifactId>
-    <version>20.0.2-SNAPSHOT</version>
+    <version>20.0.3-SNAPSHOT</version>
     <description>Parent for testing of keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -144,7 +144,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-test-tools</artifactId>
-                <version>20.0.2-SNAPSHOT</version>
+                <version>20.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
