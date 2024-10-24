@@ -18,7 +18,13 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.javaScriptThrowsNoExceptions;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -30,11 +36,22 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 public abstract class AbstractPage {
     private static final Logger log = Logger.getLogger(AbstractPage.class.getName());
 
+    // Values used to name web pages when using the save feature
+    private static final int INSTANCE_ID = new SecureRandom().nextInt() & 0xff;
+    private static int saveIndex = 0;
+
+    // This is used for navigation methods saveUrl() and restoreUrl()
+    private final Deque<String> savedURLs = new ArrayDeque<>();
+
     public static final String PAGELOAD_TIMEOUT_PROP = "pageload.timeout";
     public static final Integer PAGELOAD_TIMEOUT_MILLIS = Integer.parseInt(System.getProperty(PAGELOAD_TIMEOUT_PROP, "10000"));
 
     protected WebDriver driver;
     protected OAuthClient oauthClient;
+
+    private static synchronized int nextSaveIndex() {
+        return ++saveIndex;
+    }
 
     public void assertCurrent() {
         String name = getClass().getSimpleName();
@@ -43,6 +60,10 @@ public abstract class AbstractPage {
 
     public boolean isCurrent() {
         return false;
+    }
+
+    public boolean isNotCurrent() {
+        return !isCurrent();
     }
 
     protected String getLoginFormUrl() {
@@ -186,6 +207,10 @@ public abstract class AbstractPage {
         }
     }
 
+    public String getCurrentUrl() {
+        return this.driver.getCurrentUrl();
+    }
+
     public String getPageTitle(WebDriver driver) {
         return driver.findElement(By.id("kc-page-title")).getText();
     }
@@ -199,6 +224,39 @@ public abstract class AbstractPage {
             return driver.findElement(By.id("kc-page-title")).getText();
         } catch (NoSuchElementException e) {
             return null;
+        }
+    }
+
+    /**
+     * This method is provided for debug purpose only. You should not commit code using this method.
+     * @param comment
+     */
+    public void save(String comment) {
+        try {
+            File res = File.createTempFile("web-" + INSTANCE_ID + "-" + nextSaveIndex() + "-", ".html");
+            log.info("Writing temporary file " + res.getAbsolutePath());
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(res))) {
+                writer.write("<!-- " + this.getCurrentUrl() + " -->\n");
+                writer.write("<!-- " + comment + " -->\n");
+                writer.write(this.driver.getPageSource());
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
+    }
+
+    /**
+     * Save the current URL
+     */
+    public void saveURL() {
+        this.savedURLs.add(this.driver.getCurrentUrl());
+    }
+
+    public void restoreURL() {
+        if (!this.savedURLs.isEmpty()) {
+            String url = this.savedURLs.pop();
+            log.info("Returning to " + url);
+            this.driver.navigate().to(url);
         }
     }
 }

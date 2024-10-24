@@ -410,6 +410,26 @@ public abstract class AbstractInKeycloakTest {
     }
 
     /**
+     * Waits until a given condition is true. Uses a maximum time limit.
+     * @param conditionWhile
+     * @param maxDelay
+     * @throws InterruptedException
+     */
+    protected void waitWhile(BooleanSupplier conditionWhile, long maxDelay) throws InterruptedException {
+        waitWhile(conditionWhile, 500, maxDelay);
+    }
+
+    protected void waitWhile(BooleanSupplier conditionWhile, long interval, long maxDelay) throws InterruptedException {
+        long maxTime = System.currentTimeMillis() + maxDelay;
+        while (conditionWhile.getAsBoolean()) {
+            this.sleep(interval);
+            if (System.currentTimeMillis() > maxTime) {
+                Assertions.fail();
+            }
+        }
+    }
+
+    /**
      * Sleep for the given maxDuration. Stops if provided supplier is true
      * @param maxDuration Milliseconds
      * @param interval Interval between supplier evaluation
