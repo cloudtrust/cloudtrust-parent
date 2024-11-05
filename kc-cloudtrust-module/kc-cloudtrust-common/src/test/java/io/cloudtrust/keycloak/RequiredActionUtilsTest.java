@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.jboss.resteasy.spi.HttpRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.keycloak.authentication.RequiredActionContext;
+import org.keycloak.http.HttpRequest;
 import org.mockito.Mockito;
 
 public class RequiredActionUtilsTest {

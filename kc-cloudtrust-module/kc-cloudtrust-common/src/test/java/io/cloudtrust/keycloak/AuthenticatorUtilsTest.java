@@ -1,11 +1,11 @@
 package io.cloudtrust.keycloak;
 
-import org.jboss.resteasy.spi.HttpRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.keycloak.authentication.AuthenticationFlowContext;
+import org.keycloak.http.HttpRequest;
 import org.mockito.Mockito;
 
 import javax.ws.rs.core.MultivaluedHashMap;

@@ -5,8 +5,8 @@ import java.util.List;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.authentication.RequiredActionContext;
+import org.keycloak.http.HttpRequest;
 
 public class RequiredActionUtils {
     private RequiredActionUtils() {

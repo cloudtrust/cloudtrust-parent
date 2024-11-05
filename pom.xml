@@ -3,7 +3,7 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>cloudtrust-parent</artifactId>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>4.0.21-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
@@ -22,7 +22,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <keycloak.version>20.0.5</keycloak.version>
+        <keycloak.version>21.0.0</keycloak.version>
 
         <java.version>17</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -41,6 +41,8 @@
         <fb-contrib.version>7.6.0</fb-contrib.version>
         <findsecbugs.version>1.12.0</findsecbugs.version>
         <owasp-check.version>8.2.1</owasp-check.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <distributionManagement>
@@ -59,7 +61,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>4.0.3-SNAPSHOT</version>
+                <version>4.0.21-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

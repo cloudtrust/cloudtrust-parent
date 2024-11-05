@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-parent</artifactId>
-        <version>20.0.5</version>
+        <version>21.0.0</version>
         <relativePath />
     </parent>
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
-    <version>20.0.3-SNAPSHOT</version>
+    <version>20.0.21-SNAPSHOT</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -19,7 +19,7 @@
     </modules>
 
     <properties>
-        <keycloak.version>20.0.5</keycloak.version>
+        <keycloak.version>21.0.0</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
         <libphonenumber.version>8.13.7</libphonenumber.version>
@@ -79,12 +79,12 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>4.0.3-SNAPSHOT</version>
+                <version>4.0.21-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-common</artifactId>
-                <version>20.0.3-SNAPSHOT</version>
+                <version>20.0.21-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
