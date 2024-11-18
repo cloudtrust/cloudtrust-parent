@@ -2,13 +2,16 @@ package io.cloudtrust.keycloak.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.Header;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
@@ -23,6 +26,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,18 +90,21 @@ public class ExtensionApi {
     public String callJSON(String method, String apiPath, List<NameValuePair> nvps, Object jsonable) throws IOException, URISyntaxException {
         String json = new ObjectMapper().writeValueAsString(jsonable);
         StringEntity requestEntity = new StringEntity(json, ContentType.APPLICATION_JSON);
-        return call(method, apiPath, nvps, requestEntity);
+        return call(method, apiPath, nvps, requestEntity, new BasicHeader("Content-Type", "application/json"));
     }
 
-    public String call(String method, String apiPath, List<NameValuePair> nvps, HttpEntity entity) throws IOException, URISyntaxException {
+    public String call(String method, String apiPath, List<NameValuePair> nvps, HttpEntity entity, Header... headers) throws IOException, URISyntaxException {
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             String uri = keycloakURL + apiPath;
             URIBuilder uriBuilder = new URIBuilder(uri);
             uriBuilder.addParameters(nvps);
-            HttpRequestBase get = createHttpRequest(method, uriBuilder.build(), entity);
-            get.addHeader("Authorization", "Bearer " + getToken());
+            HttpRequestBase req = createHttpRequest(method, uriBuilder.build(), entity);
+            req.addHeader("Authorization", "Bearer " + getToken());
+            if (headers != null){
+                Arrays.stream(headers).forEach(req::addHeader);
+            }
 
-            HttpResponse response = client.execute(get);
+            HttpResponse response = client.execute(req);
             if (response.getStatusLine().getStatusCode() / 100 != 2) {
                 throw new HttpResponseException(response.getStatusLine().getStatusCode(), "call to " + uri + " failed: " + response.getStatusLine().getStatusCode());
             }
@@ -116,6 +123,8 @@ public class ExtensionApi {
                 return new HttpGet(uri);
             case "PUT":
                 return addBodyToHttpRequest(new HttpPut(uri), entity);
+            case "POST":
+                return addBodyToHttpRequest(new HttpPost(uri), entity);
             default:
                 throw new HttpResponseException(405, "Unsupported method " + method);
         }
