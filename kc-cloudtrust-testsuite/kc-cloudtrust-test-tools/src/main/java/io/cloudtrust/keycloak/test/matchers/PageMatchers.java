@@ -17,7 +17,7 @@ public class PageMatchers extends AbstractMatchers<AbstractPage> {
 
     @Override
     protected AbstractPage convert(Object item) {
-        return item instanceof AbstractPage ? (AbstractPage) item : null;
+        return item instanceof AbstractPage res ? res : null;
     }
 
     public static BaseMatcher<AbstractPage> isCurrent() {

@@ -66,7 +66,7 @@ public abstract class AbstractPage {
         return !isCurrent();
     }
 
-    protected String getLoginFormUrl() {
+    public String getLoginFormUrl() {
         return this.oauthClient.getLoginFormUrl();
     }
 
@@ -209,6 +209,10 @@ public abstract class AbstractPage {
 
     public String getCurrentUrl() {
         return this.driver.getCurrentUrl();
+    }
+
+    public String getPageSource() {
+        return driver.getPageSource();
     }
 
     public String getPageTitle(WebDriver driver) {
