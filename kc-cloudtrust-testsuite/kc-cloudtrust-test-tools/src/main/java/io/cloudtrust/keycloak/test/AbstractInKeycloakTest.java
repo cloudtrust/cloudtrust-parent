@@ -33,7 +33,7 @@ import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
@@ -163,6 +163,19 @@ public abstract class AbstractInKeycloakTest {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public void disableLightweightAccessToken(String realmName, String clientId) {
+        updateRealmClient(realmName, clientId, client ->
+            client.getAttributes().put("client.use.lightweight.access.token.enabled", "true")
+        );
+    }
+
+    public void updateRealmClient(String realmName, String clientId, Consumer<ClientRepresentation> updater) {
+        ClientResource clientRes = this.getRealm(realmName).clients().get(clientId);
+        ClientRepresentation clientRep = clientRes.toRepresentation();
+        updater.accept(clientRep);
+        clientRes.update(clientRep);
     }
 
     public void updateIdentityProvider(String idpAlias, Consumer<IdentityProviderRepresentation> updater) {

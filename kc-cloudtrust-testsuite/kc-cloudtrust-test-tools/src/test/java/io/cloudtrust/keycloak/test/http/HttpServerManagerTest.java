@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.cloudtrust.keycloak.test.util.ConsumerExcept;
 import io.cloudtrust.keycloak.test.util.JsonToolbox;
+import io.undertow.server.HttpHandler;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -76,8 +77,10 @@ public class HttpServerManagerTest {
         HttpServerManager mgr = new HttpServerManager();
         try {
             assertThat(mgr.getActiveServerPorts().isEmpty(), is(true));
-            mgr.startHttpServer(e -> {
-            });
+            HttpHandler handler = e -> {
+                System.out.println("handle !!!");
+            };
+            mgr.startHttpServer(handler);
             assertThat(mgr.getActiveServerPorts().size(), is(1));
             assertThat(mgr.getActiveServerPorts().contains(LISTEN_PORT), is(true));
             mgr.stop();
@@ -118,6 +121,9 @@ public class HttpServerManagerTest {
             Pair<Integer, String> res = query(method, path, content);
             assertThat(res.getLeft(), is(expectedStatus));
             contains.forEach(v -> assertThat(res.getRight().contains(v), is(true)));
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
         } finally {
             mgr.stop();
         }

@@ -15,8 +15,8 @@ import org.keycloak.representations.idm.AuthenticatorConfigRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +117,7 @@ public class FlowUtil {
         if (originalFlow == null) {
             throw new FlowUtilException("Can't copy flow: " + original + " does not exist");
         }
-        Map<String, String> data = Collections.singletonMap("newName", newFlowAlias);
+        Map<String, Object> data = Collections.singletonMap("newName", newFlowAlias);
         String newFlowId = getLocation(() -> this.realm.flows().copy(newFlowAlias, data));
         currentFlow = this.realm.flows().getFlow(newFlowId);
 
