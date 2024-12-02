@@ -1,10 +1,10 @@
 package io.cloudtrust.keycloak.test.util;
 
+import jakarta.ws.rs.core.UriBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.protocol.oidc.OIDCLoginProtocolService;
 
-import javax.ws.rs.core.UriBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

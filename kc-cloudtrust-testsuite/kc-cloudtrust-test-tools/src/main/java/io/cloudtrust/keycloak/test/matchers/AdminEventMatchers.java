@@ -9,6 +9,7 @@ import org.keycloak.representations.idm.AdminEventRepresentation;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+// Use keycloak test framework with AdminEventMatchers. AdminEventMatchersLegacy will be removed when KeycloakDeploy won't be used anymore
 public class AdminEventMatchers extends AbstractMatchers<AdminEventRepresentation> {
     protected static final String CT_EVENT_TYPE = "ct_event_type";
 

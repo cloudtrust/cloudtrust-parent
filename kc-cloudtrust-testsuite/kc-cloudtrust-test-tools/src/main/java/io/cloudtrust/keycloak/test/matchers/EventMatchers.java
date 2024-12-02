@@ -10,6 +10,7 @@ import org.keycloak.representations.idm.EventRepresentation;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+// Use keycloak test framework with EventMatchers. EventMatchersLegacy will be removed when KeycloakDeploy won't be used anymore
 public class EventMatchers extends AbstractMatchers<EventRepresentation> {
     protected static final String CT_EVENT_TYPE = "ct_event_type";
 

@@ -33,7 +33,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("isRealmSamples")
     void isRealmTest(EventRepresentation event, String realm, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.isRealm(realm);
+        var matcher = EventMatchers.isRealm(realm);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -43,8 +43,8 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> isRealmSamples() {
-        EventRepresentation eventInTestRealm = eventBuilder().realm("test").build();
-        EventRepresentation eventInDemoRealm = eventBuilder().realm("demo").build();
+        var eventInTestRealm = eventBuilder().realm("test").build();
+        var eventInDemoRealm = eventBuilder().realm("demo").build();
 
         return Stream.of(
                 Arguments.of(eventInTestRealm, "test", true),
@@ -58,7 +58,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("isKeycloakTypeSamples")
     void isKeycloakTypeTest(EventRepresentation event, EventType type, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.isKeycloakType(type);
+        var matcher = EventMatchers.isKeycloakType(type);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -68,8 +68,8 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> isKeycloakTypeSamples() {
-        EventRepresentation eventLogin = eventBuilder().type(EventType.LOGIN).build();
-        EventRepresentation eventLogout = eventBuilder().type(EventType.LOGOUT).build();
+        var eventLogin = eventBuilder().type(EventType.LOGIN).build();
+        var eventLogout = eventBuilder().type(EventType.LOGOUT).build();
 
         return Stream.of(
                 Arguments.of(eventLogin, EventType.LOGIN, true),
@@ -83,7 +83,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("isCloudtrustTypeSamples")
     void isCloudtrustTypeTest(EventRepresentation event, String ctType, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.isCloudtrustType(ctType);
+        var matcher = EventMatchers.isCloudtrustType(ctType);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -93,10 +93,10 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> isCloudtrustTypeSamples() {
-        EventRepresentation eventNone = eventBuilder().build();
-        EventRepresentation eventOtp = eventBuilder().ctType("otp").build();
-        EventRepresentation eventSms = eventBuilder().ctType("sms").build();
-        EventRepresentation eventOtherDetails = eventBuilder().detail("anyKey", "anyValue").build();
+        var eventNone = eventBuilder().build();
+        var eventOtp = eventBuilder().ctType("otp").build();
+        var eventSms = eventBuilder().ctType("sms").build();
+        var eventOtherDetails = eventBuilder().detail("anyKey", "anyValue").build();
 
         return Stream.of(
                 Arguments.of(eventNone, "otp", false),
@@ -112,7 +112,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasDetailSamples")
     void hasDetailTest(EventRepresentation event, String expectedValue, boolean matches, String expectedMessagePart) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.hasDetail("anyKey", expectedValue);
+        var matcher = EventMatchers.hasDetail("anyKey", expectedValue);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -122,10 +122,10 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> hasDetailSamples() {
-        EventRepresentation eventNoDetails = eventBuilder().build();
-        EventRepresentation eventOtherDetail = eventBuilder().detail("anotherKey", "value").build();
-        EventRepresentation eventDetailValue1 = eventBuilder().detail("anyKey", "value1").build();
-        EventRepresentation eventDetailValue2 = eventBuilder().detail("anyKey", "value2").build();
+        var eventNoDetails = eventBuilder().build();
+        var eventOtherDetail = eventBuilder().detail("anotherKey", "value").build();
+        var eventDetailValue1 = eventBuilder().detail("anyKey", "value1").build();
+        var eventDetailValue2 = eventBuilder().detail("anyKey", "value2").build();
 
         return Stream.of(
                 Arguments.of(null, "value1", false, null),
@@ -140,7 +140,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasNonEmptyDetailSamples")
     void hasNonEmptyDetailTest(EventRepresentation event, boolean matches, String expectedMessagePart) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.hasNonEmptyDetail("anyKey");
+        var matcher = EventMatchers.hasNonEmptyDetail("anyKey");
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -150,11 +150,11 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> hasNonEmptyDetailSamples() {
-        EventRepresentation eventNoDetails = eventBuilder().build();
-        EventRepresentation eventOtherDetail = eventBuilder().detail("anotherKey", "value").build();
-        EventRepresentation eventHasDetail = eventBuilder().detail("anyKey", "value").build();
-        EventRepresentation eventHasNullDetail = eventBuilder().detail("anyKey", null).build();
-        EventRepresentation eventHasEmptyDetail = eventBuilder().detail("anyKey", "   ").build();
+        var eventNoDetails = eventBuilder().build();
+        var eventOtherDetail = eventBuilder().detail("anotherKey", "value").build();
+        var eventHasDetail = eventBuilder().detail("anyKey", "value").build();
+        var eventHasNullDetail = eventBuilder().detail("anyKey", null).build();
+        var eventHasEmptyDetail = eventBuilder().detail("anyKey", "   ").build();
 
         return Stream.of(
                 Arguments.of(null, false, null),
@@ -169,7 +169,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasUserIdSamples")
     void hasUserIdTest(EventRepresentation event, String expectedUser, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = expectedUser == null ? EventMatchers.hasUserId() : EventMatchers.hasUserId(expectedUser);
+        var matcher = expectedUser == null ? EventMatchers.hasUserId() : EventMatchers.hasUserId(expectedUser);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -179,8 +179,8 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> hasUserIdSamples() {
-        EventRepresentation eventNoUser = eventBuilder().build();
-        EventRepresentation eventUser = eventBuilder().user("123").build();
+        var eventNoUser = eventBuilder().build();
+        var eventUser = eventBuilder().user("123").build();
 
         return Stream.of(
                 Arguments.of(null, null, false),
@@ -194,7 +194,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasNoErrorSamples")
     void hasNoErrorTest(EventRepresentation event, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.hasNoError();
+        var matcher = EventMatchers.hasNoError();
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -204,8 +204,8 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> hasNoErrorSamples() {
-        EventRepresentation eventNoError = eventBuilder().build();
-        EventRepresentation eventError = eventBuilder().error("error value").build();
+        var eventNoError = eventBuilder().build();
+        var eventError = eventBuilder().error("error value").build();
 
         return Stream.of(
                 Arguments.of(null, false),
@@ -217,7 +217,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasErrorSamples")
     void hasErrorTest(EventRepresentation event, String expectedError, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = expectedError == null ? EventMatchers.hasError() : EventMatchers.hasError(expectedError);
+        var matcher = expectedError == null ? EventMatchers.hasError() : EventMatchers.hasError(expectedError);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -227,8 +227,8 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> hasErrorSamples() {
-        EventRepresentation eventNoError = eventBuilder().build();
-        EventRepresentation eventError = eventBuilder().error("error value").build();
+        var eventNoError = eventBuilder().build();
+        var eventError = eventBuilder().error("error value").build();
 
         return Stream.of(
                 Arguments.of(null, null, false),
@@ -242,7 +242,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("doesNotHaveErrorSamples")
     void doesNotHaveErrorTest(EventRepresentation event, String unexpectedError, boolean matches) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.doesNotHaveError(unexpectedError);
+        var matcher = EventMatchers.doesNotHaveError(unexpectedError);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -252,8 +252,8 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> doesNotHaveErrorSamples() {
-        EventRepresentation eventNoError = eventBuilder().build();
-        EventRepresentation eventUndesiredError = eventBuilder().error("undesired").build();
+        var eventNoError = eventBuilder().build();
+        var eventUndesiredError = eventBuilder().error("undesired").build();
 
         return Stream.of(
                 Arguments.of(null, null, false),
@@ -265,7 +265,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("existsSamples")
     void existsTest(EventRepresentation event, boolean exists) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.exists();
+        var matcher = EventMatchers.exists();
         assertThat(matcher.matches(event), is(exists));
 
         if (!exists) {
@@ -277,7 +277,7 @@ class EventMatchersTest {
     @ParameterizedTest
     @MethodSource("existsSamples")
     void doesNotExistTest(EventRepresentation event, boolean exists) {
-        BaseMatcher<EventRepresentation> matcher = EventMatchers.doesNotExist();
+        var matcher = EventMatchers.doesNotExist();
         assertThat(matcher.matches(event), is(!exists));
 
         if (exists) {
@@ -287,7 +287,7 @@ class EventMatchersTest {
     }
 
     private static Stream<Arguments> existsSamples() {
-        EventRepresentation anyEvent = eventBuilder().build();
+        var anyEvent = eventBuilder().build();
 
         return Stream.of(
                 Arguments.of(null, false),
@@ -295,32 +295,32 @@ class EventMatchersTest {
         );
     }
 
-    private static EventRepresentationBuilder eventBuilder() {
-        return new EventRepresentationBuilder();
+    private static EventBuilder eventBuilder() {
+        return new EventBuilder();
     }
 
-    private static class EventRepresentationBuilder {
+    private static class EventBuilder {
         private final EventRepresentation event = new EventRepresentation();
 
         public EventRepresentation build() {
             return event;
         }
 
-        public EventRepresentationBuilder realm(String realm) {
+        public EventBuilder realm(String realm) {
             event.setRealmId(realm);
             return this;
         }
 
-        public EventRepresentationBuilder type(EventType type) {
+        public EventBuilder type(EventType type) {
             event.setType(type.name());
             return this;
         }
 
-        public EventRepresentationBuilder ctType(String ctType) {
+        public EventBuilder ctType(String ctType) {
             return detail(EventMatchers.CT_EVENT_TYPE, ctType);
         }
 
-        public EventRepresentationBuilder detail(String name, String value) {
+        public EventBuilder detail(String name, String value) {
             if (event.getDetails() == null) {
                 event.setDetails(new HashMap<>());
             }
@@ -328,12 +328,12 @@ class EventMatchersTest {
             return this;
         }
 
-        public EventRepresentationBuilder user(String userId) {
+        public EventBuilder user(String userId) {
             event.setUserId(userId);
             return this;
         }
 
-        public EventRepresentationBuilder error(String error) {
+        public EventBuilder error(String error) {
             event.setError(error);
             return this;
         }

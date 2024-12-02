@@ -1,10 +1,10 @@
 package io.cloudtrust.keycloak.test.events;
 
 import io.cloudtrust.keycloak.test.util.JsonToolbox;
+import jakarta.ws.rs.NotFoundException;
 import org.jboss.logging.Logger;
 import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 
-import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -95,14 +95,26 @@ public class EventsManager<T> {
     }
 
     public Collection<T> poll(int number) {
-        List<T> events = new ArrayList<>();
+        return this.poll(number, 0L);
+    }
+
+    public Collection<T> poll(int number, long maxDurationMs) {
+        List<T> res = new ArrayList<>();
+        long limit = System.currentTimeMillis() + maxDurationMs;
         for (int i = 0; i < number; i++) {
             T e = poll();
             if (e == null) {
-                break;
+                if (System.currentTimeMillis() > maxDurationMs) {
+                    break;
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
             }
-            events.add(e);
+            res.add(e);
         }
-        return events;
+        return res;
     }
 }

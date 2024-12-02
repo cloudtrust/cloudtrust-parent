@@ -1,15 +1,15 @@
 package io.cloudtrust.keycloak;
 
-import org.jboss.resteasy.spi.HttpRequest;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.keycloak.authentication.AuthenticationFlowContext;
+import org.keycloak.http.HttpRequest;
 import org.mockito.Mockito;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
@@ -25,7 +25,7 @@ class AuthenticatorUtilsTest {
         Assertions.assertEquals(expected, AuthenticatorUtils.getFirstDecodedFormParameter(ctx, paramName));
     }
 
-    public static Stream<Arguments> getRequestSamples() {
+    private static Stream<Arguments> getRequestSamples() {
         MultivaluedMap<String, String> myDecodedParameters = new MultivaluedHashMap<String, String>();
         myDecodedParameters.put("myParam", Arrays.asList("first", "second", "third"));
         myDecodedParameters.put("myEmptyParam", Collections.emptyList());

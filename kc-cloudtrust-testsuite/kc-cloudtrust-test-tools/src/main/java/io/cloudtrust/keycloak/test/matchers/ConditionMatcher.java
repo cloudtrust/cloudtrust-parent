@@ -18,7 +18,7 @@ public class ConditionMatcher extends BaseMatcher<BooleanSupplier> {
     }
 
     protected ConditionMatcher(boolean expected, Duration maxDuration) {
-        this(expected, maxDuration, 100L);
+        this(expected, maxDuration, Math.min(100L, maxDuration.toMillis()/10));
     }
 
     protected ConditionMatcher(boolean expected, Duration maxDuration, long interval) {

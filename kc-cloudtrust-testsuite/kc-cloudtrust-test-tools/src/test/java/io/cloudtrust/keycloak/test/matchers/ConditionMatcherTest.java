@@ -37,12 +37,12 @@ class ConditionMatcherTest {
         assertThat(ConditionMatcher.isTrue().matches(new ChangeStatusAfterTimeout(true, 100L)), is(true));
         assertThat(ConditionMatcher.isTrue().matches(new ChangeStatusAfterTimeout(false, 100L)), is(false));
 
-        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(50)).matches(new ChangeStatusAfterTimeout(true, 100L)), is(true));
-        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(50)).matches(new ChangeStatusAfterTimeout(false, 100L)), is(false));
+        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(20)).matches(new ChangeStatusAfterTimeout(true, 100L)), is(true));
+        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(20)).matches(new ChangeStatusAfterTimeout(false, 100L)), is(false));
         assertThat(ConditionMatcher.isTrue(Duration.ofMillis(150)).matches(new ChangeStatusAfterTimeout(false, 100L)), is(true));
 
-        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(50), 10).matches(new ChangeStatusAfterTimeout(true, 100L)), is(true));
-        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(50), 10).matches(new ChangeStatusAfterTimeout(false, 100L)), is(false));
+        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(20), 5).matches(new ChangeStatusAfterTimeout(true, 100L)), is(true));
+        assertThat(ConditionMatcher.isTrue(Duration.ofMillis(20), 5).matches(new ChangeStatusAfterTimeout(false, 100L)), is(false));
         assertThat(ConditionMatcher.isTrue(Duration.ofMillis(150), 10).matches(new ChangeStatusAfterTimeout(false, 100L)), is(true));
     }
 
