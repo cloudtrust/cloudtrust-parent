@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-parent</artifactId>
-        <version>20.0.5</version>
+        <version>26.0.7</version>
         <relativePath />
     </parent>
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
-    <version>20.0.4-SNAPSHOT</version>
+    <version>26.0.0-SNAPSHOT</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -19,24 +19,24 @@
     </modules>
 
     <properties>
-        <keycloak.version>20.0.5</keycloak.version>
+        <keycloak.version>26.0.7</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
-        <libphonenumber.version>8.13.7</libphonenumber.version>
+        <libphonenumber.version>8.13.51</libphonenumber.version>
         <java.version>17</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
 
-        <mockito.version>5.1.1</mockito.version>
-        <junit.version>5.9.2</junit.version>
+        <mockito.version>5.14.2</mockito.version>
+        <junit.version>5.11.3</junit.version>
         <version.pmd.plugin>3.13.0</version.pmd.plugin>
         <version.jboss.maven.plugin>7.9.Final</version.jboss.maven.plugin>
         <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
         <version.frontend.maven.plugin>1.12.1</version.frontend.maven.plugin>
-        <jacoco.version>0.8.11</jacoco.version>
-        <spotbugs.version>4.7.3.3</spotbugs.version>
-        <fb-contrib.version>7.6.0</fb-contrib.version>
-        <findsecbugs.version>1.12.0</findsecbugs.version>
-        <owasp-check.version>8.2.1</owasp-check.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <spotbugs.version>4.8.6</spotbugs.version>
+        <fb-contrib.version>7.6.8</fb-contrib.version>
+        <findsecbugs.version>1.13.0</findsecbugs.version>
+        <owasp-check.version>11.1.1</owasp-check.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -79,12 +79,12 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>4.0.4-SNAPSHOT</version>
+                <version>5.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-common</artifactId>
-                <version>20.0.4-SNAPSHOT</version>
+                <version>26.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
@@ -95,6 +95,12 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-common</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-config-api</artifactId>
                 <version>${keycloak.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -149,6 +155,18 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-model-infinispan</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-storage</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-storage-private</artifactId>
                 <version>${keycloak.version}</version>
                 <scope>provided</scope>
             </dependency>

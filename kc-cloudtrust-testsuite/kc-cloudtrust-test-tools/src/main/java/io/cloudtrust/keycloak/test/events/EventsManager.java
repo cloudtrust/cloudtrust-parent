@@ -4,7 +4,7 @@ import io.cloudtrust.keycloak.test.util.JsonToolbox;
 import org.jboss.logging.Logger;
 import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 
-import javax.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;

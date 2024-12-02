@@ -33,6 +33,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.lang3.SystemUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 
 import io.cloudtrust.exception.CloudtrustRuntimeException;
 import io.cloudtrust.keycloak.test.util.NopX509TrustManager;
@@ -344,8 +345,13 @@ public class KeycloakQuarkusContainer {
         if (this.adminCli == null) {
             String adminCliUrl = this.configuration.getBaseUrl();
             log.info("Creating Keycloak admin client using base URL " + adminCliUrl);
-            this.adminCli = Keycloak.getInstance(adminCliUrl, configuration.getAdminRealm(), configuration.getAdminUsername(), configuration.getAdminSecurity(),
-                    configuration.getAdminClientId());
+            this.adminCli = KeycloakBuilder.builder()
+                    .serverUrl(adminCliUrl)
+                    .realm(configuration.getAdminRealm())
+                    .username(configuration.getAdminUsername())
+                    .password(configuration.getAdminSecurity())
+                    .clientId(configuration.getAdminClientId())
+                    .build();
         }
         return this.adminCli;
     }

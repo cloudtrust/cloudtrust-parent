@@ -1,9 +1,9 @@
 package io.cloudtrust.keycloak.api;
 
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.HttpResponse;
 import org.keycloak.common.ClientConnection;
+import org.keycloak.http.HttpRequest;
+import org.keycloak.http.HttpResponse;
 import org.keycloak.jose.jws.JWSInput;
 import org.keycloak.jose.jws.JWSInputException;
 import org.keycloak.models.ClientModel;
@@ -15,16 +15,16 @@ import org.keycloak.services.managers.AppAuthManager;
 import org.keycloak.services.managers.AppAuthManager.BearerTokenAuthenticator;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.managers.RealmManager;
-import org.keycloak.services.resources.Cors;
+import org.keycloak.services.cors.Cors;
 import org.keycloak.services.resources.admin.AdminAuth;
 import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 import org.keycloak.services.resources.admin.permissions.AdminPermissions;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 
 public class ApiResource {
     private static final Logger LOG = Logger.getLogger(ApiResource.class);
@@ -37,16 +37,16 @@ public class ApiResource {
     /**
      * @deprecated request and response are often not injected correctly
      */
-    @Deprecated(since = "20.0.0", forRemoval = true)
+    /*@Deprecated(since = "20.0.0", forRemoval = true)
     @Context
-    protected HttpRequest request;
+    protected HttpRequest request;*/
 
     /**
      * @deprecated request and response are often not injected correctly
      */
-    @Deprecated(since = "20.0.0", forRemoval = true)
+    /*@Deprecated(since = "20.0.0", forRemoval = true)
     @Context
-    protected HttpResponse response;
+    protected HttpResponse response;*/
 
     protected AppAuthManager authManager;
 
@@ -105,18 +105,18 @@ public class ApiResource {
     /**
      * @deprecated request and response are often not injected correctly
      */
-    @Deprecated(since = "20.0.0", forRemoval = true)
+    /*@Deprecated(since = "20.0.0", forRemoval = true)
     protected AdminAuth auth() {
         return auth(request);
-    }
+    }*/
 
     /**
      * @deprecated request and response are often not injected correctly
      */
-    @Deprecated(since = "20.0.0", forRemoval = true)
+    /*@Deprecated(since = "20.0.0", forRemoval = true)
     protected AdminAuth auth(HttpRequest request) {
         return auth(request, response);
-    }
+    }*/
 
     protected AdminAuth auth(HttpRequest request, HttpResponse response) {
         AdminAuth auth = authenticateRealmAdminRequest(request.getHttpHeaders());
@@ -125,7 +125,7 @@ public class ApiResource {
         }
 
         LOG.debugf("authenticated admin access for: %s", auth.getUser().getUsername());
-        Cors.add(request).allowedOrigins(auth.getToken()).allowedMethods("GET", "PUT", "POST", "DELETE").exposedHeaders("Location").auth().build(response);
+        Cors.builder().allowedOrigins(auth.getToken()).allowedMethods("GET", "PUT", "POST", "DELETE").exposedHeaders("Location").auth().add();
 
         return auth;
     }
