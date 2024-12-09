@@ -2,18 +2,12 @@ package io.cloudtrust.keycloak.test.http;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
-import org.apache.commons.io.IOUtils;
-import org.xnio.streams.BufferedChannelInputStream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 
 public class HttpRequestProcessorImpl implements HttpRequestProcessor {
     private final HttpServerExchange exchange;
@@ -41,28 +35,23 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
 
     @Override
     public String param(String name) {
-        Map<String, Deque<String>> params = exchange.getQueryParameters();
-        if (params==null) {
-            return null;
-        }
-        Deque<String> values = params.get(name);
-        if (values==null) {
-            return null;
-        }
-        return values.getFirst();
+        Deque<String> params = exchange.getQueryParameters().get(name);
+        return params != null ? params.getFirst() : null;
     }
 
     @Override
     public List<String> paramValues(String name) {
-        return new ArrayList<>(exchange.getQueryParameters().get(name));
+        Deque<String> params = exchange.getQueryParameters().get(name);
+        return params != null ? List.copyOf(params) : List.of();
     }
 
     @Override
     public String body() throws IOException {
         if (this.body==null) {
-            this.startBlocking();
-            InputStream cis = new BufferedChannelInputStream(exchange.getRequestChannel(), 1024);
-            this.body = IOUtils.toString(cis, StandardCharsets.UTF_8);
+            startBlocking();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            exchange.getInputStream().transferTo(outputStream); // Reads the request body
+            return outputStream.toString(StandardCharsets.UTF_8);
         }
         return this.body;
     }
@@ -74,19 +63,12 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
 
     @Override
     public void setHeader(String name, String value) {
-        this.exchange.getResponseHeaders().put(new HttpString(name), value);
+        this.exchange.getRequestHeaders().put(new HttpString(name), value);
     }
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        this.exchange.getResponseSender().send(ByteBuffer.wrap(bytes));
-    }
-
-    @Override
-    @Deprecated
-    public OutputStream output() {
-        this.startBlocking();
-        return this.exchange.getOutputStream();
+        this.exchange.getOutputStream().write(bytes);
     }
 
     private void startBlocking() {
