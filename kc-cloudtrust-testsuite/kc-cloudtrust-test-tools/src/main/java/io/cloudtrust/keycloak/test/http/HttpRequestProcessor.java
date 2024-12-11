@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudtrust.keycloak.test.util.JsonToolbox;
-import io.undertow.util.Headers;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -40,13 +38,7 @@ public interface HttpRequestProcessor {
     }
 
     default void writeJson(Object obj) throws IOException {
-        this.setHeader(Headers.CONTENT_TYPE_STRING, "application/json");
+        this.setHeader("Content-Type", "application/json");
         this.write(JsonToolbox.toString(obj));
     }
-
-    /**
-     * @deprecated Should use write
-     */
-    @Deprecated
-    OutputStream output();
 }
