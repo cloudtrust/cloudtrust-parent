@@ -22,7 +22,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <keycloak.version>21.0.0</keycloak.version>
+        <keycloak.version>22.0.0</keycloak.version>
 
         <java.version>17</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>

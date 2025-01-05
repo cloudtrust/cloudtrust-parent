@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-parent</artifactId>
-        <version>21.0.0</version>
+        <version>22.0.0</version>
         <relativePath />
     </parent>
 
@@ -19,7 +19,7 @@
     </modules>
 
     <properties>
-        <keycloak.version>21.0.0</keycloak.version>
+        <keycloak.version>22.0.0</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
         <libphonenumber.version>8.13.7</libphonenumber.version>

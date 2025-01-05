@@ -1,6 +1,7 @@
 package io.cloudtrust.keycloak;
 
 import io.cloudtrust.keycloak.authentication.actiontoken.CtExecuteActionsActionToken;
+import jakarta.ws.rs.core.UriBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.keycloak.common.util.Time;
@@ -13,7 +14,6 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.services.resources.LoginActionsService;
 
-import javax.ws.rs.core.UriBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

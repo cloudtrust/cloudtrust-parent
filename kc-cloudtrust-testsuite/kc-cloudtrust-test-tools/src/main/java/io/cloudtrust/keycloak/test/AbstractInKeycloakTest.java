@@ -13,6 +13,7 @@ import io.cloudtrust.keycloak.test.util.FlowUtil;
 import io.cloudtrust.keycloak.test.util.JsonToolbox;
 import io.cloudtrust.keycloak.test.util.OidcTokenProvider;
 
+import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +34,6 @@ import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;

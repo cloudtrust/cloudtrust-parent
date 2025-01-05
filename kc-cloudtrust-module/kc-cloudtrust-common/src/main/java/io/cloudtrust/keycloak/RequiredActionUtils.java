@@ -1,9 +1,8 @@
 package io.cloudtrust.keycloak;
 
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.List;
-
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.keycloak.authentication.RequiredActionContext;
 import org.keycloak.http.HttpRequest;
