@@ -2,12 +2,16 @@ package io.cloudtrust.keycloak.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.cloudtrust.keycloak.test.util.JwtToolbox;
+
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.message.BasicHeader;
+import org.jboss.logging.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,7 +22,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.keycloak.admin.client.Keycloak;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,28 +33,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
 public class ExtensionApi {
+    private static final Logger LOG = Logger.getLogger(ExtensionApi.class);
+
     private final String keycloakURL;
-    private final Keycloak keycloakAdminClient;
+    private final KeycloakClientProvider keycloakClientProvider;
     private final ObjectMapper mapper = new ObjectMapper();
     private String token;
 
-    public ExtensionApi(String keycloakURL, Keycloak keycloakAdminClient) {
+    public ExtensionApi(String keycloakURL, KeycloakClientProvider keycloakClientProvider) {
         this.keycloakURL = keycloakURL;
-        this.keycloakAdminClient = keycloakAdminClient;
+        this.keycloakClientProvider = keycloakClientProvider;
     }
 
     public void initToken() {
-        String accessToken = this.keycloakAdminClient.tokenManager().getAccessTokenString();
+        String accessToken = this.keycloakClientProvider.getKeycloakAdminClient().tokenManager().getAccessTokenString();
         this.setToken(accessToken);
     }
 
     public String getToken() {
-        assertThat(this.token, is(notNullValue()));
+        if (this.token==null) {
+            initToken();
+        }
         return this.token;
     }
 
@@ -98,7 +101,15 @@ public class ExtensionApi {
             String uri = keycloakURL + apiPath;
             URIBuilder uriBuilder = new URIBuilder(uri);
             uriBuilder.addParameters(nvps);
-            HttpRequestBase req = createHttpRequest(method, uriBuilder.build(), entity);
+            URI builtUri = uriBuilder.build();
+            HttpRequestBase req = createHttpRequest(method, builtUri, entity);
+            if (LOG.isDebugEnabled()) {
+                LOG.debugf("Calling API: %s %s", method, builtUri.toString());
+                if (headers!=null) {
+                    Arrays.stream(headers).forEach(h -> LOG.infof("Header> %s %s", h.getName(), h.getValue()));
+                }
+                LOG.debugf("Auth> "+JwtToolbox.getPayload(getToken(), getToken()));
+            }
             req.addHeader("Authorization", "Bearer " + getToken());
             if (headers != null){
                 Arrays.stream(headers).forEach(req::addHeader);
@@ -118,16 +129,12 @@ public class ExtensionApi {
     }
 
     private HttpRequestBase createHttpRequest(String method, URI uri, HttpEntity entity) throws HttpResponseException {
-        switch (method) {
-            case "GET":
-                return new HttpGet(uri);
-            case "PUT":
-                return addBodyToHttpRequest(new HttpPut(uri), entity);
-            case "POST":
-                return addBodyToHttpRequest(new HttpPost(uri), entity);
-            default:
-                throw new HttpResponseException(405, "Unsupported method " + method);
-        }
+        return switch (method) {
+            case "GET" -> new HttpGet(uri);
+            case "PUT"-> addBodyToHttpRequest(new HttpPut(uri), entity);
+            case "POST"-> addBodyToHttpRequest(new HttpPost(uri), entity);
+            default -> throw new HttpResponseException(405, "Unsupported method " + method);
+        };
     }
 
     private HttpRequestBase addBodyToHttpRequest(HttpEntityEnclosingRequestBase httpRequest, HttpEntity entity) {

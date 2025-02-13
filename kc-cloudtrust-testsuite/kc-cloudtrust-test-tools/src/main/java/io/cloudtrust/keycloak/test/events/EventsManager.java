@@ -4,7 +4,7 @@ import io.cloudtrust.keycloak.test.util.JsonToolbox;
 import org.jboss.logging.Logger;
 import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 
-import javax.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -27,6 +27,11 @@ public class EventsManager<T> {
     private final Queue<T> events = new LinkedList<>();
     private final Set<String> realmWithActivatedEvents = new HashSet<>();
     private int readEvents = 0;
+
+    public enum EventType {
+        BASIC,
+        ADMIN
+    }
 
     public EventsManager(BiConsumer<String, Consumer<RealmEventsConfigRepresentation>> configurationHandler, Consumer<String> eventsCleaner, Function<String, List<T>> eventsProvider, Comparator<T> eventsComparator) {
         this.configurationHandler = configurationHandler;
@@ -95,14 +100,14 @@ public class EventsManager<T> {
     }
 
     public Collection<T> poll(int number) {
-        List<T> events = new ArrayList<>();
+        List<T> res = new ArrayList<>();
         for (int i = 0; i < number; i++) {
             T e = poll();
             if (e == null) {
                 break;
             }
-            events.add(e);
+            res.add(e);
         }
-        return events;
+        return res;
     }
 }

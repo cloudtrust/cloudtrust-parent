@@ -32,9 +32,9 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.lang3.SystemUtils;
 import org.jboss.logging.Logger;
-import org.keycloak.admin.client.Keycloak;
 
 import io.cloudtrust.exception.CloudtrustRuntimeException;
+import io.cloudtrust.keycloak.test.KeycloakClientProvider;
 import io.cloudtrust.keycloak.test.util.NopX509TrustManager;
 
 public class KeycloakQuarkusContainer {
@@ -43,10 +43,10 @@ public class KeycloakQuarkusContainer {
     private static KeycloakQuarkusContainer singleton = null;
 
     private final KeycloakQuarkusConfiguration configuration;
+    private final KeycloakClientProvider kcProvider;
     private Process container;
     private KeycloakQuarkusOutput stdOutput;
     private KeycloakQuarkusOutput errOutput;
-    private Keycloak adminCli;
 
     public static KeycloakQuarkusContainer start(KeycloakQuarkusConfiguration configuration) {
         if (singleton == null) {
@@ -62,6 +62,7 @@ public class KeycloakQuarkusContainer {
         }
         try {
             this.configuration = configuration;
+            this.kcProvider = new KeycloakClientProvider(this, configuration);
             log.infof("Starting Keycloak container. Home folder is " + configuration.getKeycloakPath());
             applyConfiguration();
             buildKeycloak();
@@ -134,7 +135,7 @@ public class KeycloakQuarkusContainer {
             try (GzipCompressorInputStream gzipIn = new GzipCompressorInputStream(isTarGz)) {
                 try (TarArchiveInputStream tarIn = new TarArchiveInputStream(gzipIn)) {
                     TarArchiveEntry entry;
-                    while ((entry = (TarArchiveEntry) tarIn.getNextEntry()) != null) {
+                    while ((entry = tarIn.getNextEntry()) != null) {
                         if (entry.isDirectory()) {
                             log.infof("Ignoring folder %s from archive %s", entry.getName(), tarGzFile.getName());
                         } else if (!entry.getName().endsWith(".jar")) {
@@ -188,12 +189,12 @@ public class KeycloakQuarkusContainer {
             builder.inheritIO();
             // no need to redirect input
             //.redirectOutput(Redirect.INHERIT)
-            //.redirectError(Redirect.INHERIT);
+            //.redirectError(Redirect.INHERIT)
         }
 
         Map<String, String> env = builder.environment();
-        env.put("KEYCLOAK_ADMIN", configuration.getAdminUsername());
-        env.put("KEYCLOAK_ADMIN_PASSWORD", configuration.getAdminSecurity());
+        env.put("KC_BOOTSTRAP_ADMIN_USERNAME", configuration.getAdminUsername());
+        env.put("KC_BOOTSTRAP_ADMIN_PASSWORD", configuration.getAdminSecurity());
         configuration.getEnvironment().forEach((k, v) -> log.debugf("env> %s=%s", k, v));
         env.putAll(configuration.getEnvironment());
 
@@ -206,6 +207,13 @@ public class KeycloakQuarkusContainer {
             return waitProcess(endCondition);
         } catch (IOException ioe) {
             return false;
+        }
+    }
+
+    public void restart() {
+        if (this.container==null) {
+            log.info("Restart Keycloak instance");
+            this.runKeycloak();
         }
     }
 
@@ -340,14 +348,12 @@ public class KeycloakQuarkusContainer {
         return connection;
     }
 
-    public Keycloak getKeycloakAdminClient() {
-        if (this.adminCli == null) {
-            String adminCliUrl = this.configuration.getBaseUrl();
-            log.info("Creating Keycloak admin client using base URL " + adminCliUrl);
-            this.adminCli = Keycloak.getInstance(adminCliUrl, configuration.getAdminRealm(), configuration.getAdminUsername(), configuration.getAdminSecurity(),
-                    configuration.getAdminClientId());
-        }
-        return this.adminCli;
+    public boolean isTokenRealm(String realm) {
+        return realm!=null && realm.equalsIgnoreCase(configuration.getAdminRealm());
+    }
+
+    public KeycloakClientProvider getKeycloakAdminClientProvider() {
+        return kcProvider;
     }
 
     public String getKeycloakVersion() {

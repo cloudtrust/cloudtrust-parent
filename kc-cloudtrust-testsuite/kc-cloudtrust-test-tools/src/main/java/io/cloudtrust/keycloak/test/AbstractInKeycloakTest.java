@@ -23,17 +23,18 @@ import org.keycloak.admin.client.resource.AuthenticationManagementResource;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.IdentityProviderResource;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserProfileResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.AdminEventRepresentation;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
-import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.userprofile.config.UPConfig;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
@@ -51,7 +52,6 @@ public abstract class AbstractInKeycloakTest {
     private static final Logger LOG = Logger.getLogger(AbstractInKeycloakTest.class);
 
     protected ObjectMapper mapper = new ObjectMapper();
-    private ExtensionApi extensionApi;
     private String defaultRealmName = null;
     private String defaultUserPassword = "password+";
 
@@ -106,12 +106,12 @@ public abstract class AbstractInKeycloakTest {
     }
 
     public void createRealm(String realmName, String filename, ConsumerExcept<RealmResource, IOException> whenCreated) throws IOException {
-        Keycloak kc = this.getContainer().getKeycloakAdminClient();
-        RealmResource testRealm = importTestRealm(kc, realmName, filename);
+        KeycloakClientProvider kcAdminCliProvider = this.getContainer().getKeycloakAdminClientProvider();
+        RealmResource testRealm = importTestRealm(kcAdminCliProvider, realmName, filename);
         whenCreated.accept(testRealm);
     }
 
-    protected RealmResource importTestRealm(Keycloak keycloak, String realmName, String realmFilePath) throws IOException {
+    protected RealmResource importTestRealm(KeycloakClientProvider kcAdminCliProvider, String realmName, String realmFilePath) throws IOException {
         RealmRepresentation realmRepresentation = new ObjectMapper().readValue(
                 getClass().getResourceAsStream(realmFilePath), RealmRepresentation.class);
         if (realmName == null) {
@@ -120,17 +120,18 @@ public abstract class AbstractInKeycloakTest {
         LOG.debugf("Creating realm %s", realmName);
         events().onRealmRemoved(realmName);
         adminEvents().onRealmRemoved(realmName);
-        RealmResource realm = keycloak.realm(realmName);
+        RealmResource realm = kcAdminCliProvider.getKeycloakAdminClient().realm(realmName);
         try {
             realm.remove();
         } catch (Exception e) {
             // Ignore
         }
-        keycloak.realms().create(realmRepresentation);
+        kcAdminCliProvider.getKeycloakAdminClient().realms().create(realmRepresentation);
         if (this.defaultRealmName == null) {
             this.defaultRealmName = realmName;
         }
-        return keycloak.realm(realmName);
+        kcAdminCliProvider.reset(); // Force refresh of JWT with audience/roles for the new realm
+        return kcAdminCliProvider.getKeycloakAdminClient().realm(realmName);
     }
 
     public RealmResource getRealm() {
@@ -138,7 +139,7 @@ public abstract class AbstractInKeycloakTest {
     }
 
     public RealmResource getRealm(String realmName) {
-        return this.getContainer().getKeycloakAdminClient().realm(realmName);
+        return this.getKeycloakAdminClient().realm(realmName);
     }
 
     public void updateRealm(String realmName, Consumer<RealmRepresentation> updater) {
@@ -163,6 +164,55 @@ public abstract class AbstractInKeycloakTest {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public void disableLightweightAccessToken(String realmName, String clientId) {
+        updateRealmClient(realmName, clientId, client -> {
+            client.getAttributes().put("client.use.lightweight.access.token.enabled", "false");
+        });
+        if (getContainer().isTokenRealm(realmName)) {
+            resetAdminClient();
+        }
+    }
+
+    /**
+     * Update the default test realm user profile
+     * @param updater
+     */
+    public void updateUserProfile(Consumer<UPConfig> updater) {
+        this.updateUserProfile(this.defaultRealmName, updater);
+    }
+
+    /**
+     * Update the named realm user profile
+     * @param realmName
+     * @param updater
+     */
+    public void updateUserProfile(String realmName, Consumer<UPConfig> updater) {
+        this.updateUserProfile(getRealm(realmName), updater);
+    }
+
+    /**
+     * Update the default test realm user profile
+     * @param realm
+     * @param updater
+     */
+    public void updateUserProfile(RealmResource realm, Consumer<UPConfig> updater) {
+        UserProfileResource userProfile = realm.users().userProfile();
+        UPConfig upConfig = userProfile.getConfiguration();
+        updater.accept(upConfig);
+        userProfile.update(upConfig);
+    }
+
+    protected void resetAdminClient() {
+        getContainer().getKeycloakAdminClientProvider().reset();
+    }
+
+	public void updateRealmClient(String realmName, String clientId, Consumer<ClientRepresentation> updater) {
+        ClientRepresentation clientRep = this.getRealm(realmName).clients().findByClientId(clientId).get(0);
+        ClientResource clientRes = this.getRealm(realmName).clients().get(clientRep.getId());
+        updater.accept(clientRep);
+        clientRes.update(clientRep);
     }
 
     public void updateIdentityProvider(String idpAlias, Consumer<IdentityProviderRepresentation> updater) {
@@ -348,7 +398,7 @@ public abstract class AbstractInKeycloakTest {
     }
 
     protected Keycloak getKeycloakAdminClient() {
-        return this.getContainer().getKeycloakAdminClient();
+        return this.getContainer().getKeycloakAdminClientProvider().getKeycloakAdminClient();
     }
 
     protected FlowUtil getFlowUtil() {
@@ -456,69 +506,19 @@ public abstract class AbstractInKeycloakTest {
     /**
      * Events management
      */
-    private EventsManager<EventRepresentation> eventsManager;
-    private EventsManager<AdminEventRepresentation> adminEventsManager;
-
     public EventsManager<EventRepresentation> events() {
-        if (eventsManager == null) {
-            eventsManager = new EventsManager<>(
-                    (realmName, configConsumer) -> {
-                        RealmResource realm = getRealm(realmName);
-                        RealmEventsConfigRepresentation conf = realm.getRealmEventsConfig();
-                        boolean update = false;
-                        if (!conf.isEventsEnabled()) {
-                            conf.setEventsEnabled(true);
-                            update = true;
-                        }
-                        if (configConsumer != null) {
-                            configConsumer.accept(conf);
-                        }
-                        if (update) {
-                            realm.updateRealmEventsConfig(conf);
-                        }
-                    },
-                    r -> this.getRealm(r).clearEvents(),
-                    r -> this.getRealm(r).getEvents(),
-                    (e1, e2) -> (int) (e1.getTime() - e2.getTime())
-            );
-        }
-        return this.eventsManager;
+        return this.getContainer().getKeycloakAdminClientProvider().events();
     }
 
     public EventsManager<AdminEventRepresentation> adminEvents() {
-        if (adminEventsManager == null) {
-            adminEventsManager = new EventsManager<>(
-                    (realmName, configConsumer) -> {
-                        RealmResource realm = getRealm(realmName);
-                        RealmEventsConfigRepresentation conf = realm.getRealmEventsConfig();
-                        boolean update = false;
-                        if (!Boolean.TRUE.equals(conf.isAdminEventsEnabled())) {
-                            conf.setAdminEventsEnabled(true);
-                            update = true;
-                        }
-                        if (configConsumer != null) {
-                            configConsumer.accept(conf);
-                        }
-                        if (update) {
-                            realm.updateRealmEventsConfig(conf);
-                        }
-                    },
-                    r -> this.getRealm(r).clearAdminEvents(),
-                    r -> this.getRealm(r).getAdminEvents(),
-                    (e1, e2) -> (int) (e1.getTime() - e2.getTime())
-            );
-        }
-        return this.adminEventsManager;
+        return this.getContainer().getKeycloakAdminClientProvider().adminEvents();
     }
 
     /**
      * API management
      */
     protected ExtensionApi api() {
-        if (extensionApi == null) {
-            extensionApi = new ExtensionApi(this.getKeycloakURL(), this.getKeycloakAdminClient());
-        }
-        return extensionApi;
+        return this.getContainer().getKeycloakAdminClientProvider().api();
     }
 
     public OidcTokenProvider createOidcTokenProvider() {
@@ -526,7 +526,11 @@ public abstract class AbstractInKeycloakTest {
     }
 
     public OidcTokenProvider createOidcTokenProvider(String username, String password) {
-        return new OidcTokenProvider(getKeycloakURL(), "/realms/test/protocol/openid-connect/token", username, password);
+        return createOidcTokenProvider(defaultRealmName, username, password);
+    }
+
+    public OidcTokenProvider createOidcTokenProvider(String realm, String username, String password) {
+        return new OidcTokenProvider(getKeycloakURL(), "/realms/"+realm+"/protocol/openid-connect/token", username, password);
     }
 
     public void injectComponents() throws InjectionException {
