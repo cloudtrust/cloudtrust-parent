@@ -1,10 +1,10 @@
 package io.cloudtrust.keycloak;
 
-import org.jboss.resteasy.spi.HttpRequest;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import org.keycloak.authentication.AuthenticationFlowContext;
+import org.keycloak.http.HttpRequest;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 
 public class AuthenticatorUtils {

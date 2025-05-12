@@ -8,6 +8,7 @@ import org.keycloak.events.Details;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.mockito.Mockito;
@@ -28,11 +29,13 @@ class EventsTest {
         RealmModel realm = Mockito.mock(RealmModel.class);
         KeycloakSession kcSession = Mockito.mock(KeycloakSession.class);
         ClientConnection clientConnection = Mockito.mock(ClientConnection.class);
+        KeycloakSessionFactory kcSessFactory = Mockito.mock(KeycloakSessionFactory.class);
 
         Mockito.when(realm.getId()).thenReturn(realmId);
         Mockito.when(realm.isEventsEnabled()).thenReturn(false);
         Mockito.when(realm.getEventsListenersStream()).thenReturn(Stream.of());
         Mockito.when(clientConnection.getRemoteAddr()).thenReturn(ipAddr);
+        Mockito.when(kcSession.getKeycloakSessionFactory()).thenReturn(kcSessFactory);
 
         EventBuilder event = new EventBuilder(realm, kcSession, clientConnection);
         Mockito.when(ctx.getEvent()).thenReturn(event);

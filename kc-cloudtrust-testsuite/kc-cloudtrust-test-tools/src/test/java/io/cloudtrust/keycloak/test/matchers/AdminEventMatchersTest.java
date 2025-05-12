@@ -31,7 +31,7 @@ class AdminEventMatchersTest {
     @ParameterizedTest
     @MethodSource("isRealmSamples")
     void isRealmTest(AdminEventRepresentation event, String realm, boolean matches) {
-        BaseMatcher<AdminEventRepresentation> matcher = AdminEventMatchers.isRealm(realm);
+        var matcher = AdminEventMatchers.isRealm(realm);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -41,8 +41,8 @@ class AdminEventMatchersTest {
     }
 
     private static Stream<Arguments> isRealmSamples() {
-        AdminEventRepresentation eventInTestRealm = createEvent("test", null);
-        AdminEventRepresentation eventInDemoRealm = createEvent("demo", null);
+        var eventInTestRealm = createEvent("test", null);
+        var eventInDemoRealm = createEvent("demo", null);
 
         return Stream.of(
                 Arguments.of(eventInTestRealm, "test", true),
@@ -56,7 +56,7 @@ class AdminEventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasNoErrorSamples")
     void hasNoErrorTest(AdminEventRepresentation event, boolean matches) {
-        BaseMatcher<AdminEventRepresentation> matcher = AdminEventMatchers.hasNoError();
+        var matcher = AdminEventMatchers.hasNoError();
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -66,8 +66,8 @@ class AdminEventMatchersTest {
     }
 
     private static Stream<Arguments> hasNoErrorSamples() {
-        AdminEventRepresentation eventNoError = createEvent(null, null);
-        AdminEventRepresentation eventError = createEvent(null, "error value");
+        var eventNoError = createEvent(null, null);
+        var eventError = createEvent(null, "error value");
 
         return Stream.of(
                 Arguments.of(null, false),
@@ -79,7 +79,7 @@ class AdminEventMatchersTest {
     @ParameterizedTest
     @MethodSource("hasErrorSamples")
     void hasErrorTest(AdminEventRepresentation event, String expectedError, boolean matches) {
-        BaseMatcher<AdminEventRepresentation> matcher = expectedError == null ? AdminEventMatchers.hasError() : AdminEventMatchers.hasError(expectedError);
+        var matcher = expectedError == null ? AdminEventMatchers.hasError() : AdminEventMatchers.hasError(expectedError);
         assertThat(matcher.matches(event), is(matches));
 
         if (!matches) {
@@ -89,8 +89,8 @@ class AdminEventMatchersTest {
     }
 
     private static Stream<Arguments> hasErrorSamples() {
-        AdminEventRepresentation eventNoError = createEvent(null, null);
-        AdminEventRepresentation eventError = createEvent(null, "error value");
+        var eventNoError = createEvent(null, null);
+        var eventError = createEvent(null, "error value");
 
         return Stream.of(
                 Arguments.of(null, null, false),
@@ -104,7 +104,7 @@ class AdminEventMatchersTest {
     @ParameterizedTest
     @MethodSource("existsSamples")
     void existsTest(AdminEventRepresentation event, boolean exists) {
-        BaseMatcher<AdminEventRepresentation> matcher = AdminEventMatchers.exists();
+        var matcher = AdminEventMatchers.exists();
         assertThat(matcher.matches(event), is(exists));
 
         if (!exists) {
@@ -116,7 +116,7 @@ class AdminEventMatchersTest {
     @ParameterizedTest
     @MethodSource("existsSamples")
     void doesNotExistTest(AdminEventRepresentation event, boolean exists) {
-        BaseMatcher<AdminEventRepresentation> matcher = AdminEventMatchers.doesNotExist();
+        var matcher = AdminEventMatchers.doesNotExist();
         assertThat(matcher.matches(event), is(!exists));
 
         if (exists) {
@@ -126,7 +126,7 @@ class AdminEventMatchersTest {
     }
 
     private static Stream<Arguments> existsSamples() {
-        AdminEventRepresentation anyEvent = createEvent(null, null);
+        var anyEvent = createEvent(null, null);
 
         return Stream.of(
                 Arguments.of(null, false),
@@ -135,7 +135,7 @@ class AdminEventMatchersTest {
     }
 
     private static AdminEventRepresentation createEvent(String realm, String error) {
-        AdminEventRepresentation res = new AdminEventRepresentation();
+        var res = new AdminEventRepresentation();
         res.setRealmId(realm);
         res.setError(error);
         return res;

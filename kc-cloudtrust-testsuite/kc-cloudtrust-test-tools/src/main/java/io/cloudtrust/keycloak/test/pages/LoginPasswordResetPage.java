@@ -14,7 +14,7 @@ public class LoginPasswordResetPage extends AbstractPage {
     @FindBy(id = "input-error-username")
     private WebElement usernameError;
 
-    @FindBy(css = "input[type=\"submit\"]")
+    @FindBy(css = "[type=\"submit\"]")
     private WebElement submitButton;
 
     @FindBy(className = "alert-success")

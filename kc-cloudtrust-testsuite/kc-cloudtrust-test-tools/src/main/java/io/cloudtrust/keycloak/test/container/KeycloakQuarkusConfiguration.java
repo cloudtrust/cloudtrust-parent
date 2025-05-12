@@ -5,6 +5,7 @@ import io.cloudtrust.keycloak.test.util.TestSuiteParameters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jboss.logging.Logger;
+import org.keycloak.it.utils.Maven;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -75,7 +76,7 @@ public class KeycloakQuarkusConfiguration {
             if (cfg.keycloakPath == null) {
                 throw new CloudtrustRuntimeException("Can't find keycloak instance in " + path);
             }
-            log.info("Detected keycloak home at " + cfg.keycloakPath);
+            log.infof("Detected keycloak home at %s", cfg.keycloakPath);
             return this;
         }
 
@@ -87,7 +88,21 @@ public class KeycloakQuarkusConfiguration {
         }
 
         public KeycloakQuarkusConfigurationBuilder addModuleJar(String filename) {
-            return addModuleJar(new File(filename));
+            String[] mavenParts = filename.split("\\:");
+            if (mavenParts.length == 1) {
+                return addModuleJar(new File(filename));
+            }
+            return addMavenDependency(mavenParts);
+        }
+
+        public KeycloakQuarkusConfigurationBuilder addMavenDependency(String[] mavenParts) {
+            if (mavenParts.length != 2) {
+                throw new CloudtrustRuntimeException("Unknown module " + mavenParts[0] + ":" + mavenParts[1]);
+            }
+
+            Path path = Maven.resolveArtifact(mavenParts[0], mavenParts[1]);
+            log.infof("Found dependency: %s", path.toFile().getName());
+            return addModuleJar(path.toFile());
         }
 
         public KeycloakQuarkusConfigurationBuilder addModuleJar(File jarFile) {
@@ -98,12 +113,12 @@ public class KeycloakQuarkusConfiguration {
                     File[] possibleFiles = jarFile.getParentFile().listFiles((dir, name) -> splitted.equals(splitVersion(name)));
                     if (possibleFiles != null && possibleFiles.length == 1) {
                         jarFile = possibleFiles[0];
-                        log.info("Found alternative: " + jarFile.getAbsolutePath());
+                        log.infof("Found alternative: %s", jarFile.getAbsolutePath());
                         found = true;
                     }
                 }
                 if (!found) {
-                    log.info(jarFile.getAbsolutePath() + " doesn't exist... No alternative version of " + jarFile.getName() + " found");
+                    log.infof("%s doesn't exist... No alternative version of %s found", jarFile.getAbsolutePath(), jarFile.getName());
                 }
             }
             cfg.jarFiles.add(jarFile);
