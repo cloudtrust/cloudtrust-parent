@@ -11,7 +11,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class WebDriverFactory {

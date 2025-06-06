@@ -1,5 +1,6 @@
 package io.cloudtrust.keycloak.test;
 
+import io.cloudtrust.exception.CloudtrustRuntimeException;
 import io.cloudtrust.keycloak.test.http.HttpServerManager;
 import io.cloudtrust.keycloak.test.util.FlowUtil;
 import jakarta.ws.rs.core.Response;
@@ -63,6 +64,7 @@ public class AbstractKeycloakTest {
         LOG.info(separator);
     }
 
+    // Can be used to inject a specific Selenium webdriver in a class rather than the default one
     protected void inject(Field field, WebDriver driver) {
         try {
             // field is instanceof AbstractPage ?
@@ -82,10 +84,12 @@ public class AbstractKeycloakTest {
                 }
             }
         } catch (Exception e) {
-            // Ignore
+            LOG.error("Failed to inject webdriver", e);
+            throw new CloudtrustRuntimeException("Failed to inject webdriver", e);
         }
     }
 
+    // Can be used to inject a specific Selenium webdriver in a class rather than the default one
     public <T> void injectWebDriverInPages(WebDriver driver) {
         injectWebDriverInPages(this.getClass(), driver);
     }
