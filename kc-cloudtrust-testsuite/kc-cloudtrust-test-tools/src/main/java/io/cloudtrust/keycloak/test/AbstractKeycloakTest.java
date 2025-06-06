@@ -1,5 +1,6 @@
 package io.cloudtrust.keycloak.test;
 
+import io.cloudtrust.exception.CloudtrustRuntimeException;
 import io.cloudtrust.keycloak.test.http.HttpServerManager;
 import io.cloudtrust.keycloak.test.util.FlowUtil;
 import jakarta.ws.rs.core.Response;
@@ -26,7 +27,12 @@ import org.keycloak.representations.userprofile.config.UPConfig;
 import org.keycloak.testframework.events.AdminEvents;
 import org.keycloak.testframework.events.Events;
 import org.keycloak.testframework.realm.ManagedRealm;
+import org.keycloak.testframework.ui.page.AbstractPage;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +62,47 @@ public class AbstractKeycloakTest {
         LOG.info(separator);
         LOG.info(message);
         LOG.info(separator);
+    }
+
+    // Can be used to inject a specific Selenium webdriver in a class rather than the default one
+    protected void inject(Field field, WebDriver driver) {
+        try {
+            // field is instanceof AbstractPage ?
+            if (AbstractPage.class.isAssignableFrom(field.getType())) {
+                field.setAccessible(true);
+                Object pageInstance = field.get(this);
+                if (pageInstance != null) {
+                    Field webDriverField = AbstractPage.class.getDeclaredField("driver");
+                    webDriverField.setAccessible(true);
+
+                    Constructor<?> constructor = field.getType().getDeclaredConstructor(WebDriver.class);
+                    constructor.setAccessible(true);
+                    Object newInstance = constructor.newInstance(driver);
+                    PageFactory.initElements(driver, newInstance);
+                    field.set(this, newInstance);
+                    LOG.debugf("** WebDriver> replacing new instance of %s to field %s", field.getType().getSimpleName(), field.getName());
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to inject webdriver", e);
+            throw new CloudtrustRuntimeException("Failed to inject webdriver", e);
+        }
+    }
+
+    // Can be used to inject a specific Selenium webdriver in a class rather than the default one
+    public <T> void injectWebDriverInPages(WebDriver driver) {
+        injectWebDriverInPages(this.getClass(), driver);
+    }
+
+    public <T> void injectWebDriverInPages(Class<T> clazz, WebDriver driver) {
+        if (clazz != null) {
+            LOG.debugf("*** WebDriver> injecting from %s", clazz.getSimpleName());
+            // Parcours tous les champs de la classe de test (this)
+            for (Field field : clazz.getDeclaredFields()) {
+                inject(field, driver);
+            }
+            injectWebDriverInPages(clazz.getSuperclass(), driver);
+        }
     }
 
     /**

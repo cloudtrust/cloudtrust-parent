@@ -38,7 +38,7 @@ public class WebDriverFactory {
         };
     }
 
-    private static WebDriver createHtmlUnitDriver(boolean enableJavascript) {
+    public static WebDriver createHtmlUnitDriver(boolean enableJavascript) {
         LOG.debug("Creating HTMLUnit driver");
         return new HtmlUnitDriver(enableJavascript);
     }
@@ -55,7 +55,7 @@ public class WebDriverFactory {
 
     private static ChromeDriver chromeDriver = null;
 
-    private static WebDriver createChromeDriver(String envArgs, boolean headless) {
+    public static WebDriver createChromeDriver(String envArgs, boolean headless) {
         if (chromeDriver == null) {
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
@@ -69,14 +69,14 @@ public class WebDriverFactory {
                 }
                 options.addArguments("--remote-allow-origins=*"); // stackoverflow.com/questions/75680149/unable-to-establish-websocket-connection
             }
-            options.addArguments("--disable-gpu");
+            options.addArguments("--no-sandbox", "--disable-gpu", "--window-size=1420,1080", "--ignore-certificate-errors", "--disable-dev-shm-usage");
             logOptions("Creating Chrome driver", options);
             chromeDriver = new ChromeDriver(options);
         }
         return chromeDriver;
     }
 
-    private static WebDriver createFirefoxDriver(String envArgs, boolean headless) {
+    public static WebDriver createFirefoxDriver(String envArgs, boolean headless) {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
         if (StringUtils.isNotBlank(envArgs)) {
