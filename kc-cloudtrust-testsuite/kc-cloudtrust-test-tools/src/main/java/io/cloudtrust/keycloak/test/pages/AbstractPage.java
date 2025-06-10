@@ -232,6 +232,30 @@ public abstract class AbstractPage {
     }
 
     /**
+     * Wait during a max duration until an element is shown
+     * @param by
+     * @param maxDuration
+     * @return
+     */
+    public WebElement waitForElement(By by, long maxDuration) {
+        NoSuchElementException except = null;
+        for(long limit = System.currentTimeMillis() + maxDuration; System.currentTimeMillis()<limit; ) {
+            try {
+                return driver.findElement(by);
+            } catch (NoSuchElementException nsee) {
+                except = nsee;
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            }
+        }
+        assert except != null;
+        throw except;
+    }
+
+    /**
      * This method is provided for debug purpose only. You should not commit code using this method.
      *
      * @param comment
