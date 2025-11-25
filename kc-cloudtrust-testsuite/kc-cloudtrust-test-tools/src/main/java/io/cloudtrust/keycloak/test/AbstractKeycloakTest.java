@@ -5,11 +5,11 @@ import io.cloudtrust.keycloak.test.http.HttpServerManager;
 import io.cloudtrust.keycloak.test.util.FlowUtil;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.engine.spi.Managed;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.AuthenticationManagementResource;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.IdentityProviderResource;
@@ -533,4 +533,11 @@ public class AbstractKeycloakTest {
         }
         return false;
     }
+
+    public ExtensionApi api(Keycloak keycloak, ManagedRealm realm) {
+        String baseUrl = realm.getBaseUrl();
+        baseUrl = baseUrl.substring(0, baseUrl.indexOf("/realms/"));
+        return new ExtensionApi(baseUrl, () -> keycloak.tokenManager().getAccessTokenString());
+    }
+
 }
