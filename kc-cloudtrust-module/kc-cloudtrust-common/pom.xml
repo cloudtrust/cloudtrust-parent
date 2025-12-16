@@ -12,6 +12,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.cloudtrust</groupId>
+            <artifactId>cloudtrust-common</artifactId>
+            <version>5.0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-server-spi</artifactId>
             <scope>provided</scope>
