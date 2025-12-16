@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>io.cloudtrust</groupId>
         <artifactId>kc-cloudtrust-module</artifactId>
-        <version>26.0.2-SNAPSHOT</version>
+        <version>26.0.2</version>
         <relativePath>../kc-cloudtrust-module</relativePath>
     </parent>
 
@@ -142,17 +141,17 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-test-tools</artifactId>
-                <version>5.0.2-SNAPSHOT</version>
+                <version>5.0.2</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-db-access</artifactId>
-                <version>26.0.2-SNAPSHOT</version>
+                <version>26.0.2</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-test-tools</artifactId>
-                <version>26.0.2-SNAPSHOT</version>
+                <version>26.0.2</version>
             </dependency>
             <!-- env variables for unit tests -->
             <dependency>
