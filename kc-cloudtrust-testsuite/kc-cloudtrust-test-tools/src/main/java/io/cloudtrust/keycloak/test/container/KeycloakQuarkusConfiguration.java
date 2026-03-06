@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class KeycloakQuarkusConfiguration {
     private static final Logger log = Logger.getLogger(KeycloakQuarkusConfiguration.class);
     private static final String DEFAULT_SEARCH_PATH = "./target";

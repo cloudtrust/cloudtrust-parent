@@ -13,6 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class ConfigurationReader {
     private final Pattern patternSection = Pattern.compile("^\\[([\\w-]+)\\]$");
     private final Pattern patternProperty = Pattern.compile("^([^=]+)=(.*)$");

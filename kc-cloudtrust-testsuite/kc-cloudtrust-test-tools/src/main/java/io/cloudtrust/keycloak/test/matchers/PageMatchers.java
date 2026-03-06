@@ -6,6 +6,7 @@ import org.hamcrest.BaseMatcher;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@Deprecated
 public class PageMatchers extends AbstractMatchers<AbstractPage> {
     protected PageMatchers(Predicate<AbstractPage> predicate, Function<AbstractPage, String> describer) {
         super(predicate, describer);

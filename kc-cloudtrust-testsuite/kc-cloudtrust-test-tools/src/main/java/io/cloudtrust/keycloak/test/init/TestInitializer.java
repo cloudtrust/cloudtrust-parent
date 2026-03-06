@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+@Deprecated
 public class TestInitializer {
     public void init(AbstractInKeycloakTest target, boolean forceReInit) throws io.cloudtrust.keycloak.test.init.InjectionException {
         for (Class<?> clazz = target.getClass(); clazz != null; clazz = clazz.getSuperclass()) {

@@ -151,15 +151,15 @@ public class ExtensionApi {
     /**
      * We assume here that kc-cloudtrust-db-access has been loaded with Keycloak providers
      *
-     * @param realm
-     * @param userId
-     * @return
-     * @throws IOException
-     * @throws URISyntaxException
+     * @param realm  Realm name
+     * @param userId User ID
+     * @return a map of user attributes stored in the database, where the key is the attribute name and the value is a list of attribute values
+     * @throws IOException        Deserialization error
+     * @throws URISyntaxException Invalid URI syntax
      */
     public Map<String, List<String>> getUserAttributesFromDatabase(String realm, String userId) throws IOException, URISyntaxException {
-        String path = String.format("/realms/%s/database-provider/users/%s/attributes", realm, userId);
-        TypeReference<Map<String, List<String>>> typeRef = new TypeReference<Map<String, List<String>>>() {
+        var path = String.format("/realms/%s/database-provider/users/%s/attributes", realm, userId);
+        var typeRef = new TypeReference<Map<String, List<String>>>() {
         };
         return this.query(typeRef, "GET", path, new ArrayList<>());
     }
@@ -167,12 +167,12 @@ public class ExtensionApi {
     /**
      * We assume here that kc-cloudtrust-db-access has been loaded with Keycloak providers
      *
-     * @param realm
-     * @param userId
-     * @param attrbs
-     * @return
-     * @throws IOException
-     * @throws URISyntaxException
+     * @param realm  Realm name
+     * @param userId User ID
+     * @param attrbs a map of user attributes to be stored in the database, where the key is the attribute name and the value is a list of attribute values
+     * @return a string response from the API, which can be used to check if the operation was successful or not
+     * @throws IOException        Deserialization error
+     * @throws URISyntaxException Invalid URI syntax
      */
     public String setUserAttributesIntoDatabase(String realm, String userId, Map<String, List<String>> attrbs) throws IOException, URISyntaxException {
         String path = String.format("/realms/%s/database-provider/users/%s/attributes", realm, userId);

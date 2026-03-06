@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class TestSuiteParameters {
     private static final Logger log = Logger.getLogger(TestSuiteParameters.class);
     private static final TypeReference<Map<String, Object>> mapTypeRef = new TypeReference<>() {
@@ -55,7 +56,7 @@ public class TestSuiteParameters {
 
     public Integer getEnvAsInt(String paramName, Integer defaultValue) {
         String value = this.getEnv(paramName, null);
-        Integer res = NumberUtils.toInt(value, -999);
+        var res = NumberUtils.toInt(value, -999);
         return res != -999 ? res : defaultValue;
     }
 }

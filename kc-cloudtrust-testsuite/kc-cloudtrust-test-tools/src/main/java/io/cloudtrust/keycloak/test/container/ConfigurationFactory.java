@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ConfigurationFactory {
     private static final Logger LOG = Logger.getLogger(ConfigurationFactory.class);
     private static final ConfigurationFactory singleton = new ConfigurationFactory();
