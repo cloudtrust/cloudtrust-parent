@@ -42,7 +42,7 @@ public class ExecuteActionsEmailHelper {
 
         String link = builder.build(realm.getName()).toString();
 
-        if (actions.contains(VERIFY_EMAIL_ACTION) && checkAlreadyUsedEmail(session, realm, user)) {
+        if (!realm.isDuplicateEmailsAllowed() && actions.contains(VERIFY_EMAIL_ACTION) && checkAlreadyUsedEmail(session, realm, user)) {
             // Can't validate email as another user is already using the specified one
             Map<String, Object> params = new HashMap<>();
             params.put("user", new ProfileBean(user, session));
