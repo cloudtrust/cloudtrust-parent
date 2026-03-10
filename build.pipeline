@@ -7,5 +7,5 @@ javaBuildPipeline(
         [name: 'kc-cloudtrust-db-access', path: './kc-cloudtrust-testsuite/kc-cloudtrust-db-access', pom: './kc-cloudtrust-testsuite/pom.xml'],
         [name: 'kc-cloudtrust-test-tools', path: './kc-cloudtrust-testsuite/kc-cloudtrust-test-tools', pom: './kc-cloudtrust-testsuite/pom.xml']
     ],
-    true
+    isGithub: true
 )
