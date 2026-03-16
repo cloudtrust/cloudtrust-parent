@@ -4,6 +4,7 @@ import org.jboss.logging.Logger;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+@Deprecated
 public class KeycloakDeploy implements BeforeAllCallback, ExtensionContext.Store.CloseableResource {
     private static final Logger LOG = Logger.getLogger(KeycloakDeploy.class);
     private static KeycloakDeploy singleton = null;

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.BaseMatcher;
 import org.keycloak.events.EventType;
 import org.keycloak.representations.idm.EventRepresentation;
+import org.keycloak.testframework.realm.ManagedRealm;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,6 +26,10 @@ public class EventMatchers extends AbstractMatchers<EventRepresentation> {
     @Override
     protected EventRepresentation convert(Object item) {
         return item instanceof EventRepresentation ? (EventRepresentation) item : null;
+    }
+
+    public static BaseMatcher<EventRepresentation> isRealm(ManagedRealm expectedRealm) {
+        return isRealm(expectedRealm.getId());
     }
 
     public static BaseMatcher<EventRepresentation> isRealm(String expectedRealm) {

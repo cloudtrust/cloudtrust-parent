@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.BaseMatcher;
+import org.keycloak.events.admin.OperationType;
 import org.keycloak.representations.idm.AdminEventRepresentation;
+import org.keycloak.testframework.realm.ManagedRealm;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,10 +28,39 @@ public class AdminEventMatchers extends AbstractMatchers<AdminEventRepresentatio
         return item instanceof AdminEventRepresentation ? (AdminEventRepresentation) item : null;
     }
 
+    public static BaseMatcher<AdminEventRepresentation> isRealm(ManagedRealm expectedRealm) {
+        return isRealm(expectedRealm.getId());
+    }
+
     public static BaseMatcher<AdminEventRepresentation> isRealm(String expectedRealm) {
         return new AdminEventMatchers(
                 e -> expectedRealm.equals(e.getRealmId()),
                 e -> String.format("Event realm is %s when expected value is %s", e.getRealmId(), expectedRealm)
+        );
+    }
+
+    public static BaseMatcher<AdminEventRepresentation> isOperationType(OperationType operationType) {
+        return isOperationType(operationType.toString());
+    }
+
+    public static BaseMatcher<AdminEventRepresentation> isOperationType(String operationType) {
+        return new AdminEventMatchers(
+                e -> e.getOperationType()!=null && operationType.equals(e.getOperationType()),
+                e -> String.format("Operation type is %s when %s is expected", e.getOperationType(), operationType)
+        );
+    }
+
+    public static BaseMatcher<AdminEventRepresentation> isAuthDetailsUserId(String userId) {
+        return new AdminEventMatchers(
+                e-> e.getAuthDetails()!=null && userId.equals(e.getAuthDetails().getUserId()),
+                null
+        );
+    }
+
+    public static BaseMatcher<AdminEventRepresentation> isResourcePath(String path) {
+        return new AdminEventMatchers(
+                e-> path.equals(e.getResourcePath()),
+                e -> String.format("Resource path is %s when %s is expected", path, e.getResourcePath())
         );
     }
 

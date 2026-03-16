@@ -3,6 +3,7 @@ package io.cloudtrust.keycloak.test;
 import io.cloudtrust.exception.CloudtrustRuntimeException;
 import io.cloudtrust.keycloak.test.http.HttpServerManager;
 import io.cloudtrust.keycloak.test.util.FlowUtil;
+import io.cloudtrust.keycloak.test.util.OAuthClient;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -53,6 +54,11 @@ public class AbstractKeycloakTest {
 
     protected HttpServerManager http() {
         return HttpServerManager.getDefault();
+    }
+
+    protected String getKeycloakURL(ManagedRealm realm) {
+        var res = realm.getBaseUrl();
+        return res.substring(0, res.indexOf("/realms/"));
     }
 
     @BeforeEach
@@ -119,10 +125,27 @@ public class AbstractKeycloakTest {
         this.defaultUserPassword = defaultUserPassword;
     }
 
+    protected String getLoginFormUrl(ManagedRealm realm) {
+        return new OAuthClient(realm.getBaseUrl()).getLoginFormUrl();
+    }
+
+    protected void openLoginForm(WebDriver webDriver, ManagedRealm realm) {
+        webDriver.navigate().to(getLoginFormUrl(realm));
+    }
+
+    protected String getLogoutUrl(ManagedRealm realm) {
+        return new OAuthClient(realm.getBaseUrl()).getLogoutFormUrl();
+    }
+
+    protected void openLogout(WebDriver webDriver, ManagedRealm realm) {
+        webDriver.navigate().to(getLogoutUrl(realm));
+    }
+
     /**
      * Update a realm
-     * @param realm
-     * @param updater
+     *
+     * @param realm   Realm to update
+     * @param updater Consumer that takes a RealmRepresentation, modifies it and returns it
      */
     public void updateRealm(ManagedRealm realm, Consumer<RealmRepresentation> updater) {
         updateRealm(realm.admin(), updater);
@@ -137,8 +160,8 @@ public class AbstractKeycloakTest {
     /**
      * Update the default test realm user profile
      *
-     * @param realm
-     * @param updater
+     * @param realm   Realm to update
+     * @param updater Consumer that takes a UPConfig, modifies it and returns it
      */
     public void updateUserProfile(ManagedRealm realm, Consumer<UPConfig> updater) {
         updateUserProfile(realm.admin(), updater);
@@ -154,16 +177,16 @@ public class AbstractKeycloakTest {
     /**
      * Update a client
      *
-     * @param realm
-     * @param clientId
-     * @param updater
+     * @param realm    Realm to update
+     * @param clientId ID of the client to update
+     * @param updater  Consumer that takes a ClientRepresentation, modifies it and returns it
      */
     public void updateRealmClient(ManagedRealm realm, String clientId, Consumer<ClientRepresentation> updater) {
         updateRealmClient(realm.admin(), clientId, updater);
     }
 
     public void updateRealmClient(RealmResource realm, String clientId, Consumer<ClientRepresentation> updater) {
-        ClientRepresentation clientRep = realm.clients().findByClientId(clientId).get(0);
+        ClientRepresentation clientRep = realm.clients().findByClientId(clientId).getFirst();
         ClientResource clientRes = realm.clients().get(clientRep.getId());
         updater.accept(clientRep);
         clientRes.update(clientRep);
@@ -172,9 +195,9 @@ public class AbstractKeycloakTest {
     /**
      * Update an identity provider
      *
-     * @param realm
-     * @param idpAlias
-     * @param updater
+     * @param realm    Realm to update
+     * @param idpAlias Alias of the identity provider to update
+     * @param updater  Consumer that takes an IdentityProviderRepresentation, modifies it and returns it
      */
     public void updateIdentityProvider(ManagedRealm realm, String idpAlias, Consumer<IdentityProviderRepresentation> updater) {
         updateIdentityProvider(realm.admin(), idpAlias, updater);
@@ -190,9 +213,9 @@ public class AbstractKeycloakTest {
     /**
      * Search users
      *
-     * @param realm
-     * @param username
-     * @return
+     * @param realm    Realm to search in
+     * @param username Username to search for
+     * @return A list of UserRepresentation matching the search criteria
      */
     public List<UserRepresentation> searchUsers(ManagedRealm realm, String username) {
         return searchUsers(realm.admin(), username);
@@ -205,9 +228,9 @@ public class AbstractKeycloakTest {
     /**
      * Get user by name
      *
-     * @param realm
-     * @param username
-     * @return
+     * @param realm    Realm to search in
+     * @param username Username of the user to search for
+     * @return UserRepresentation of the user with the given username, or null if no such user is found
      */
     public UserRepresentation getUserByName(ManagedRealm realm, String username) {
         return getUserByName(realm.admin(), username);
@@ -215,31 +238,31 @@ public class AbstractKeycloakTest {
 
     public UserRepresentation getUserByName(RealmResource realm, String username) {
         List<UserRepresentation> users = searchUsers(realm, username);
-        return users == null || users.isEmpty() ? null : users.get(0);
+        return users == null || users.isEmpty() ? null : users.getFirst();
     }
 
     /**
      * Get user attributes
      *
-     * @param realm
-     * @param username
-     * @return
+     * @param realm    Realm to search in
+     * @param username Username of the user
+     * @return A map of user attributes, where the key is the attribute name and the value is a list of strings representing the attribute values.
      */
     public Map<String, List<String>> getUserAttributes(ManagedRealm realm, String username) {
         return getUserAttributes(realm.admin(), username);
     }
 
     public Map<String, List<String>> getUserAttributes(RealmResource realm, String username) {
-        return searchUsers(realm, username).get(0).getAttributes();
+        return searchUsers(realm, username).getFirst().getAttributes();
     }
 
     /**
      * Get user attribute
      *
-     * @param realm
-     * @param username
-     * @param attributeName
-     * @return
+     * @param realm         Realm to search in
+     * @param username      Username of the user
+     * @param attributeName Name of the attribute to get
+     * @return The attribute value as a list of strings, or an empty list if the attribute is not found
      */
     public List<String> getUserAttribute(ManagedRealm realm, String username, String attributeName) {
         return getUserAttribute(realm.admin(), username, attributeName);
@@ -254,10 +277,10 @@ public class AbstractKeycloakTest {
     /**
      * Get user attribute as a string
      *
-     * @param realm
-     * @param username
-     * @param attributeName
-     * @return
+     * @param realm         Realm to search in
+     * @param username      Username of the user
+     * @param attributeName Name of the attribute to get. If the attribute has multiple values, only the first one will be returned.
+     * @return The attribute value as a string, or null if the attribute is not found
      */
     public String getUserAttributeAsString(ManagedRealm realm, String username, String attributeName) {
         return getUserAttributeAsString(realm.admin(), username, attributeName);
@@ -265,16 +288,16 @@ public class AbstractKeycloakTest {
 
     public String getUserAttributeAsString(RealmResource realm, String username, String attributeName) {
         List<String> attrbs = getUserAttribute(realm, username, attributeName);
-        return attrbs == null || attrbs.isEmpty() ? null : attrbs.get(0);
+        return attrbs == null || attrbs.isEmpty() ? null : attrbs.getFirst();
     }
 
     /**
      * Get user attribute as an integer
      *
-     * @param realm
-     * @param username
-     * @param attributeName
-     * @return
+     * @param realm         Realm to search in
+     * @param username      Username of the user
+     * @param attributeName Name of the attribute to get. The attribute value must be an integer, otherwise 0 will be returned.
+     * @return The attribute value as an integer, or 0 if the attribute is not found or cannot be parsed as an integer
      */
     public int getUserAttributeAsInt(ManagedRealm realm, String username, String attributeName) {
         return getUserAttributeAsInt(realm.admin(), username, attributeName);
@@ -291,10 +314,10 @@ public class AbstractKeycloakTest {
     /**
      * Set a user attribute
      *
-     * @param realm
-     * @param username
-     * @param attributeName
-     * @param values
+     * @param realm         Realm to update
+     * @param username      Username of the user to update
+     * @param attributeName Name of the attribute to set
+     * @param values        Values of the attribute to set
      */
     public void setUserAttribute(ManagedRealm realm, String username, String attributeName, List<String> values) {
         setUserAttribute(realm.admin(), username, attributeName, values);
@@ -302,7 +325,7 @@ public class AbstractKeycloakTest {
 
     public void setUserAttribute(RealmResource realm, String username, String attributeName, List<String> values) {
         UsersResource kcUsers = realm.users();
-        UserRepresentation user = kcUsers.search(username).get(0);
+        UserRepresentation user = kcUsers.search(username).getFirst();
         if (user.getAttributes() == null) {
             user.setAttributes(new HashMap<>());
         }
@@ -313,9 +336,9 @@ public class AbstractKeycloakTest {
     /**
      * Remove a user attribute
      *
-     * @param realm
-     * @param username
-     * @param attributeName
+     * @param realm         Realm to update
+     * @param username      Username of the user to update
+     * @param attributeName Name of the attribute to remove
      */
     public void removeUserAttribute(ManagedRealm realm, String username, String attributeName) {
         removeUserAttribute(realm.admin(), username, attributeName);
@@ -323,7 +346,7 @@ public class AbstractKeycloakTest {
 
     public void removeUserAttribute(RealmResource realm, String username, String attributeName) {
         UsersResource kcUsers = realm.users();
-        UserRepresentation user = kcUsers.search(username).get(0);
+        UserRepresentation user = kcUsers.search(username).getFirst();
         user.getAttributes().remove(attributeName);
         kcUsers.get(user.getId()).update(user);
     }
@@ -331,25 +354,25 @@ public class AbstractKeycloakTest {
     /**
      * Get user credentials
      *
-     * @param realm
-     * @param username
-     * @param predicate
-     * @return
+     * @param realm     Realm to search in
+     * @param username  Username of the user
+     * @param predicate Predicate to filter credentials. All credentials for which the predicate returns true will be returned.
+     * @return A stream of credentials matching the predicate
      */
     public Stream<CredentialRepresentation> getUserCredentials(ManagedRealm realm, String username, Predicate<? super CredentialRepresentation> predicate) {
         return getUserCredentials(realm.admin(), username, predicate);
     }
 
     public Stream<CredentialRepresentation> getUserCredentials(RealmResource realm, String username, Predicate<? super CredentialRepresentation> predicate) {
-        return realm.users().get(realm.users().search(username).get(0).getId()).credentials().stream()
+        return realm.users().get(realm.users().search(username).getFirst().getId()).credentials().stream()
                 .filter(predicate);
     }
 
     /**
      * Register required action
      *
-     * @param realm
-     * @param requiredActionIds
+     * @param realm             Realm to update
+     * @param requiredActionIds IDs of required actions to register
      */
     public void registerRequiredActions(ManagedRealm realm, String... requiredActionIds) {
         registerRequiredActions(realm.admin(), requiredActionIds);
@@ -366,10 +389,10 @@ public class AbstractKeycloakTest {
     /**
      * Create a user
      *
-     * @param realm
-     * @param username
-     * @param userUpdater
-     * @return
+     * @param realm       Realm to update
+     * @param username    Username of the user to create
+     * @param userUpdater Consumer that takes a UserRepresentation, modifies it and returns it.
+     * @return The ID of the created user
      */
     protected String createUser(ManagedRealm realm, String username, Consumer<UserRepresentation> userUpdater) {
         return createUser(realm.admin(), username, userUpdater);
@@ -416,35 +439,143 @@ public class AbstractKeycloakTest {
         return null;
     }
 
-    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb) {
-        return pollEvents(events, nb, 0);
+    public AdminEventRepresentation poll(AdminEvents events, Duration timeout) {
+        return poll(events, null, timeout);
     }
 
-    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb, long timeout) {
-        long limit = System.currentTimeMillis() + timeout;
+    public AdminEventRepresentation poll(AdminEvents events, Predicate<AdminEventRepresentation> eventPredicate, Duration timeout) {
+        return poll(events, eventPredicate, timeout.toMillis());
+    }
+
+    public AdminEventRepresentation poll(AdminEvents events, Predicate<AdminEventRepresentation> eventPredicate, long timeoutMillis) {
+        var res = pollEvents(events, 1, eventPredicate, timeoutMillis);
+        return res.isEmpty() ? null : res.getFirst();
+    }
+
+    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb) {
+        return pollEvents(events, nb, e -> true);
+    }
+
+    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb, Predicate<AdminEventRepresentation> eventPredicate) {
+        return pollEvents(events, nb, eventPredicate, 0);
+    }
+
+    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb, Duration timeout) {
+        return pollEvents(events, nb, e -> true, timeout.toMillis());
+    }
+
+    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb, long timeoutMillis) {
+        return pollEvents(events, nb, e -> true, timeoutMillis);
+    }
+
+    public List<AdminEventRepresentation> pollEvents(AdminEvents events, int nb, Predicate<AdminEventRepresentation> eventPredicate, long timeoutMillis) {
+        long limit = System.currentTimeMillis() + timeoutMillis;
         List<AdminEventRepresentation> res = new ArrayList<>();
         do {
             AdminEventRepresentation e = events.poll();
-            if (e != null) {
+            if (e != null && (eventPredicate==null || eventPredicate.test(e))) {
                 res.add(e);
             }
         } while (System.currentTimeMillis() < limit && res.size() < nb);
         return res;
     }
 
+    public EventRepresentation poll(Events events, Duration timeout) {
+        return poll(events, timeout, null);
+    }
+
+    public EventRepresentation poll(Events events, Duration timeout, Predicate<EventRepresentation> eventPredicate) {
+        var res = pollEvents(events, 1, eventPredicate, timeout);
+        return res.isEmpty() ? null : res.getFirst();
+    }
+
     public List<EventRepresentation> pollEvents(Events events, int nb) {
-        return pollEvents(events, nb, 0);
+        return pollEvents(events, nb, null,0);
+    }
+
+    public List<EventRepresentation> pollEvents(Events events, int nb, Predicate<EventRepresentation> eventPredicate) {
+        return pollEvents(events, nb, eventPredicate, 0);
+    }
+
+    public List<EventRepresentation> pollEvents(Events events, int nb, Duration timeout) {
+        return pollEvents(events, nb, null, timeout.toMillis());
+    }
+
+    public List<EventRepresentation> pollEvents(Events events, int nb, Predicate<EventRepresentation> eventPredicate, Duration timeout) {
+        return pollEvents(events, nb, eventPredicate, timeout.toMillis());
     }
 
     public List<EventRepresentation> pollEvents(Events events, int nb, long timeout) {
-        long limit = System.currentTimeMillis() + timeout;
-        List<EventRepresentation> res = new ArrayList<>();
+        return pollEvents(events, nb, null, timeout);
+    }
+
+    public List<EventRepresentation> pollEvents(Events events, int nb, Predicate<EventRepresentation> eventPredicate, long timeout) {
+        var limit = System.currentTimeMillis() + timeout;
+        var res = new ArrayList<EventRepresentation>();
         do {
-            EventRepresentation e = events.poll();
-            if (e != null) {
+            var e = events.poll();
+            if (e != null && (eventPredicate==null || eventPredicate.test(e))) {
                 res.add(e);
             }
         } while (System.currentTimeMillis() < limit && res.size() < nb);
+        return res;
+    }
+
+    public List<EventRepresentation> pollEvents(List<Events> eventsSources, int count) {
+        return pollEvents(eventsSources, count, null, Duration.ofMillis(0));
+    }
+
+    public List<EventRepresentation> pollEvents(List<Events> eventsSources, int count, Predicate<EventRepresentation> eventPredicate) {
+        return pollEvents(eventsSources, count, eventPredicate, Duration.ofMillis(0));
+    }
+
+    public List<EventRepresentation> pollEvents(List<Events> eventsSources, int count, Duration timeout) {
+        return pollEvents(eventsSources, count, null, timeout);
+    }
+
+    public List<EventRepresentation> pollEvents(List<Events> eventsSources, int count, Predicate<EventRepresentation> eventPredicate, Duration timeout) {
+        var limit = System.currentTimeMillis() + timeout.toMillis();
+        var res = new ArrayList<EventRepresentation>();
+        do {
+            for (var eventsSrc : eventsSources) {
+                var newEvents = pollEvents(eventsSrc, count, eventPredicate);
+                res.addAll(newEvents);
+                count -= newEvents.size();
+            }
+            if (count > 0) {
+                sleep(50);
+            }
+        }
+        while (count > 0 && System.currentTimeMillis() < limit);
+        return res;
+    }
+
+    public List<AdminEventRepresentation> pollAdminEvents(List<AdminEvents> eventsSources, int count) {
+        return pollAdminEvents(eventsSources, count, null, Duration.ofMillis(0));
+    }
+
+    public List<AdminEventRepresentation> pollAdminEvents(List<AdminEvents> eventsSources, int count, Predicate<AdminEventRepresentation> eventPredicate) {
+        return pollAdminEvents(eventsSources, count, eventPredicate, Duration.ofMillis(0));
+    }
+
+    public List<AdminEventRepresentation> pollAdminEvents(List<AdminEvents> eventsSources, int count, Duration timeout) {
+        return pollAdminEvents(eventsSources, count, null, timeout);
+    }
+
+    public List<AdminEventRepresentation> pollAdminEvents(List<AdminEvents> eventsSources, int count, Predicate<AdminEventRepresentation> eventPredicate, Duration timeout) {
+        var limit = System.currentTimeMillis() + timeout.toMillis();
+        var res = new ArrayList<AdminEventRepresentation>();
+        do {
+            for (var eventsSrc : eventsSources) {
+                var newEvents = pollEvents(eventsSrc, count, eventPredicate);
+                res.addAll(newEvents);
+                count -= newEvents.size();
+            }
+            if (count > 0) {
+                sleep(50);
+            }
+        }
+        while (count > 0 && System.currentTimeMillis() < limit);
         return res;
     }
 
@@ -492,9 +623,9 @@ public class AbstractKeycloakTest {
     /**
      * Waits until a given condition is true. Uses a maximum time limit.
      *
-     * @param conditionWhile
-     * @param maxDelay
-     * @throws InterruptedException
+     * @param conditionWhile Condition to wait for. The method will wait until this condition returns false.
+     * @param maxDelay       Maximum time to wait in milliseconds. If this time is exceeded, the method will fail.
+     * @throws InterruptedException if the thread is interrupted while waiting
      */
     protected void waitWhile(BooleanSupplier conditionWhile, long maxDelay) throws InterruptedException {
         waitWhile(conditionWhile, 500, maxDelay);

@@ -33,6 +33,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
+@Deprecated
 public abstract class AbstractPage {
     private static final Logger log = Logger.getLogger(AbstractPage.class.getName());
 

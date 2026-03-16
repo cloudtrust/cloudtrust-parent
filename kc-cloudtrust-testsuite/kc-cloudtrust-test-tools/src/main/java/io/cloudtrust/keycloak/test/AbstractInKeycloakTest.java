@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+@Deprecated
 public abstract class AbstractInKeycloakTest extends AbstractKeycloakTest {
     private static final Logger LOG = Logger.getLogger(AbstractInKeycloakTest.class);
 

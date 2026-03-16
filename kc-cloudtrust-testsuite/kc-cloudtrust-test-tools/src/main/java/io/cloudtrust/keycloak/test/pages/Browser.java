@@ -2,6 +2,7 @@ package io.cloudtrust.keycloak.test.pages;
 
 import org.openqa.selenium.WebDriver;
 
+@Deprecated
 public class Browser extends AbstractPage {
     public WebDriver getDriver() {
         return driver;

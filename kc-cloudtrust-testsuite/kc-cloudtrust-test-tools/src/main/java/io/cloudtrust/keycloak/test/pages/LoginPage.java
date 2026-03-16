@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
 /**
  * Inspired from Keycloak testsuite tools
  */
+@Deprecated
 public class LoginPage extends AbstractPage {
     @FindBy(id = "username")
     protected WebElement usernameInput;

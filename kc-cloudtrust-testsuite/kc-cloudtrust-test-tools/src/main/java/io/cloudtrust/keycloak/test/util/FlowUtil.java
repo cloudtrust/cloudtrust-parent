@@ -18,6 +18,7 @@ import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.RequiredActionProviderRepresentation;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class FlowUtil {
     private final RealmResource realm;
@@ -55,6 +55,7 @@ public class FlowUtil {
     private static final String FORM_FLOW = "form-flow";
 
     public static class FlowUtilException extends RuntimeException {
+        @Serial
         private static final long serialVersionUID = 5118401044519260295L;
 
         public FlowUtilException(String message) {
@@ -181,7 +182,7 @@ public class FlowUtil {
             if (headers == null || !headers.containsKey(headerName) || headers.get(headerName).isEmpty()) {
                 return null;
             }
-            String value = (String) headers.get(headerName).get(0);
+            String value = (String) headers.get(headerName).getFirst();
             Matcher matcher = pattern.matcher(value);
             if (matcher.find()) {
                 return matcher.group(1);
@@ -375,7 +376,7 @@ public class FlowUtil {
     private List<AuthenticationExecutionRepresentation> getExecutions() {
         if (executions == null) {
             AuthenticationManagementResource flows = realm.flows();
-            executions = flows.getExecutions(currentFlow.getAlias()).stream().map(e -> flows.getExecution(e.getId())).collect(Collectors.toList());
+            executions = flows.getExecutions(currentFlow.getAlias()).stream().map(e -> flows.getExecution(e.getId())).toList();
             if (executions == null) {
                 throw new FlowUtilException("Can't get executions of unknown flow " + currentFlow.getAlias());
             }

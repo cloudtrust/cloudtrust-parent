@@ -35,6 +35,7 @@ import java.util.function.BooleanSupplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class KeycloakQuarkusContainer {
     private static final Logger log = Logger.getLogger(KeycloakQuarkusContainer.class);
 

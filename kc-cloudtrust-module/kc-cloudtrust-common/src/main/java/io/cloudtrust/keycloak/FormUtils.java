@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
  * @author fpe
  */
 public class FormUtils {
+    private static final Set<String> DISALLOWED_ALTERNATIVE_TYPES = Set.of("blocker-auth-display-name");
+
     private FormUtils() {
     }
 
@@ -61,7 +64,12 @@ public class FormUtils {
     public static LoginFormsProvider getFormWithAuthenticators(AuthenticationFlowContext context, String selectedCredentialId, Consumer<AlternativeAuthenticator> optionUpdater) {
         LoginFormsProvider form = context.form();
 
-        Map<String, AuthenticationExecutionModel> authExecs = context.getAuthenticationSelections().stream()
+        var authSelections = context.getAuthenticationSelections().stream()
+                .filter(aso -> !DISALLOWED_ALTERNATIVE_TYPES.contains(aso.getDisplayName()))
+                .toList();
+        context.setAuthenticationSelections(authSelections);
+
+        Map<String, AuthenticationExecutionModel> authExecs = authSelections.stream()
                 .collect(Collectors.toMap(AuthenticationSelectionOption::getDisplayName, AuthenticationSelectionOption::getAuthenticationExecution));
         final CredentialTypeMetadataContext ctmCtx = CredentialTypeMetadataContext.builder().user(context.getUser()).build(context.getSession());
         Map<String, AuthenticationExecutionModel> authTypes = context.getSession().getAllProviders(CredentialProvider.class).stream()

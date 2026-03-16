@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+@Deprecated
 public class KeycloakQuarkusOutput {
     private static final Logger log = Logger.getLogger(KeycloakQuarkusOutput.class);
 

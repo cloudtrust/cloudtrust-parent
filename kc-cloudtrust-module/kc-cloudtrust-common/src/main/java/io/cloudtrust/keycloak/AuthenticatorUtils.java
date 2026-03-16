@@ -25,6 +25,6 @@ public class AuthenticatorUtils {
 
     public static String getFirstDecodedFormParameter(AuthenticationFlowContext context, String paramName) {
         List<String> params = getDecodedFormParameters(context, paramName);
-        return params == null || params.isEmpty() ? null : params.get(0);
+        return params == null || params.isEmpty() ? null : params.getFirst();
     }
 }

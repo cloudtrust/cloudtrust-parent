@@ -4,6 +4,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.protocol.oidc.OIDCLoginProtocol;
 import org.keycloak.protocol.oidc.OIDCLoginProtocolService;
+import org.keycloak.testframework.realm.ManagedRealm;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,10 @@ public class OAuthClient {
     private String realm = "test";
     private String clientId = "test-app"; // ex: account-console
     private String redirectUri; // http://keycloak.local:8080/realms/test/account
-    private String state = UUID.randomUUID().toString();
-    private String scope = "openid";
+    private final String state = UUID.randomUUID().toString();
+    private final String scope = "openid";
     private String maxAge;
-    private String responseType = OAuth2Constants.CODE;
+    private final String responseType = OAuth2Constants.CODE;
     private String responseMode; // ex: fragment
     private String nonce;
     private String codeChallenge; // ex: Y7vZn1cm4FoNCmrfDYW-OONnF5-Xv3oF9evFj0THDVk
@@ -30,6 +31,12 @@ public class OAuthClient {
     private String postLogoutRedirectUri;
     private String idTokenHint;
     private String initiatingIDP;
+
+    public OAuthClient(ManagedRealm realm) {
+        this.baseUrl = realm.getBaseUrl().substring(0, realm.getBaseUrl().indexOf("/realms/"));
+        this.redirectUri = baseUrl + "/home";
+        this.realm = realm.getName();
+    }
 
     public OAuthClient(String baseUrl) {
         this.baseUrl = baseUrl;
