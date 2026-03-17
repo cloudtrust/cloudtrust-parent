@@ -57,6 +57,9 @@ public class TestSuiteParameters {
     public Integer getEnvAsInt(String paramName, Integer defaultValue) {
         String value = this.getEnv(paramName, null);
         var res = NumberUtils.toInt(value, -999);
-        return res != -999 ? res : defaultValue;
+        if (res == -999) { // Use of ternary operator may cause issues here with autoboxing if defaultValue is null
+            return defaultValue;
+        }
+        return res;
     }
 }
