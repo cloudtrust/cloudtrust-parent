@@ -5,6 +5,7 @@ import io.cloudtrust.keycloak.test.util.OAuthClient;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
+import org.keycloak.testframework.realm.ManagedRealm;
 import org.keycloak.testframework.ui.page.AbstractPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -47,8 +48,6 @@ public abstract class AbstractCtPage extends AbstractPage {
     public static final String PAGELOAD_TIMEOUT_PROP = "pageload.timeout";
     public static final Integer PAGELOAD_TIMEOUT_MILLIS = Integer.parseInt(System.getProperty(PAGELOAD_TIMEOUT_PROP, "10000"));
 
-    protected OAuthClient oauthClient;
-
     public AbstractCtPage(WebDriver driver) {
         super(driver);
     }
@@ -70,8 +69,8 @@ public abstract class AbstractCtPage extends AbstractPage {
         return !isCurrent();
     }
 
-    public String getLoginFormUrl() {
-        return this.oauthClient.getLoginFormUrl();
+    public String getLoginFormUrl(ManagedRealm realm) {
+        return new OAuthClient(realm).getLoginFormUrl();
     }
 
     public void open() {
@@ -81,8 +80,8 @@ public abstract class AbstractCtPage extends AbstractPage {
     /**
      * Navigate to a logout URL. Automatically confirm logout if necessary
      */
-    public void openLogout() {
-        openLogout(true);
+    public void openLogout(ManagedRealm realm) {
+        openLogout(realm, true);
     }
 
     /**
@@ -90,22 +89,14 @@ public abstract class AbstractCtPage extends AbstractPage {
      *
      * @param automaticallyConfirmLogout If a confirmation is required, tells if confirmation should be given automatically or not
      */
-    public void openLogout(boolean automaticallyConfirmLogout) {
-        driver.navigate().to(oauthClient.getLogoutFormUrl());
+    public void openLogout(ManagedRealm realm, boolean automaticallyConfirmLogout) {
+        driver.navigate().to(new OAuthClient(realm).getLogoutFormUrl());
         if (automaticallyConfirmLogout) {
             WebElement elt = this.driver.findElement(By.id("kc-logout"));
             if (elt != null) {
                 elt.click();
             }
         }
-    }
-
-    public OAuthClient getOAuthClient() {
-        return this.oauthClient;
-    }
-
-    public void setOAuthClient(OAuthClient client) {
-        this.oauthClient = client;
     }
 
     public void clickLink(WebElement element) {
