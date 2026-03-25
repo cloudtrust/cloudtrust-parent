@@ -1,6 +1,7 @@
 package io.cloudtrust.keycloak.test.ctpages;
 
 import org.junit.jupiter.api.Assertions;
+import org.keycloak.testframework.realm.ManagedRealm;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -187,13 +188,12 @@ public class LoginPage extends AbstractCtPage {
         return rememberMe.isSelected();
     }
 
-    @Override
-    public void open() {
-        openLoginForm();
+    public void open(ManagedRealm realm) {
+        openLoginForm(realm);
         assertCurrent();
     }
 
-    private void openLoginForm() {
-        driver.navigate().to(getLoginFormUrl());
+    private void openLoginForm(ManagedRealm realm) {
+        driver.navigate().to(getLoginFormUrl(realm));
     }
 }

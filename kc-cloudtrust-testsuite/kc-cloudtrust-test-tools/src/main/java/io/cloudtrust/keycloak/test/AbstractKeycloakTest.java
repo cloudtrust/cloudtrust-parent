@@ -126,7 +126,7 @@ public class AbstractKeycloakTest {
     }
 
     protected String getLoginFormUrl(ManagedRealm realm) {
-        return new OAuthClient(realm.getBaseUrl()).getLoginFormUrl();
+        return new OAuthClient(realm).getLoginFormUrl();
     }
 
     protected void openLoginForm(WebDriver webDriver, ManagedRealm realm) {
@@ -134,7 +134,7 @@ public class AbstractKeycloakTest {
     }
 
     protected String getLogoutUrl(ManagedRealm realm) {
-        return new OAuthClient(realm.getBaseUrl()).getLogoutFormUrl();
+        return new OAuthClient(realm).getLogoutFormUrl();
     }
 
     protected void openLogout(WebDriver webDriver, ManagedRealm realm) {
