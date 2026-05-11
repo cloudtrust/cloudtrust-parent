@@ -141,17 +141,17 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-test-tools</artifactId>
-                <version>5.0.7-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-db-access</artifactId>
-                <version>26.0.7-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-test-tools</artifactId>
-                <version>26.0.7-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <!-- env variables for unit tests -->
             <dependency>
