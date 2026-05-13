@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Deprecated
 public class EventsManager<T> {
     private static final Logger LOG = Logger.getLogger(EventsManager.class);
 

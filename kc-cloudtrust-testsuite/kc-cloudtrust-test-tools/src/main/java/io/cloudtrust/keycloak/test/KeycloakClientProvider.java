@@ -19,6 +19,7 @@ import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
  *
  * @author fpe
  */
+@Deprecated
 public class KeycloakClientProvider {
     private static final Logger LOG = Logger.getLogger(KeycloakClientProvider.class);
 

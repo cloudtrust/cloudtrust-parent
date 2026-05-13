@@ -3,7 +3,7 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>cloudtrust-parent</artifactId>
-    <version>26.0.10-SNAPSHOT</version>
+    <version>26.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
@@ -14,6 +14,7 @@
     </scm>
 
     <modules>
+        <module>cloudtrust-bom</module>
         <module>cloudtrust-common</module>
         <module>cloudtrust-test-tools</module>
         <module>kc-cloudtrust-module</module>
@@ -21,6 +22,7 @@
     </modules>
 
     <properties>
+        <cloudtrust.version>26.1.0-SNAPSHOT</cloudtrust.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <keycloak.version>26.2.4</keycloak.version>
 
@@ -61,7 +63,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>${project.version}</version>
+                <version>${cloudtrust.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
