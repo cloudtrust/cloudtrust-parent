@@ -3,7 +3,7 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
-    <version>26.0.8-SNAPSHOT</version>
+    <version>26.0.8</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
