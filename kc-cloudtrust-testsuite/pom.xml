@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.cloudtrust</groupId>
         <artifactId>kc-cloudtrust-module</artifactId>
-        <version>26.0.7-SNAPSHOT</version>
+        <version>26.0.7</version>
         <relativePath>../kc-cloudtrust-module</relativePath>
     </parent>
 
