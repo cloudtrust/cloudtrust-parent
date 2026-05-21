@@ -18,11 +18,9 @@
         <module>cloudtrust-common</module>
         <module>cloudtrust-test-tools</module>
         <module>kc-cloudtrust-module</module>
-        <module>kc-cloudtrust-testsuite</module>
     </modules>
 
     <properties>
-        <cloudtrust.version>26.1.0-SNAPSHOT</cloudtrust.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <keycloak.version>26.2.4</keycloak.version>
 
@@ -63,7 +61,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>${cloudtrust.version}</version>
+                <version>26.1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
