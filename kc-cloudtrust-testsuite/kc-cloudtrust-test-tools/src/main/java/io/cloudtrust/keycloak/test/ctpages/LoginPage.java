@@ -2,6 +2,7 @@ package io.cloudtrust.keycloak.test.ctpages;
 
 import org.junit.jupiter.api.Assertions;
 import org.keycloak.testframework.realm.ManagedRealm;
+import org.keycloak.testframework.realm.ManagedUser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -64,6 +65,10 @@ public class LoginPage extends AbstractCtPage {
     @Override
     public String getExpectedPageId() {
         return null;
+    }
+
+    public void login(ManagedUser user) {
+        login(user.getUsername(), user.getPassword());
     }
 
     public void login(String username, String password) {
@@ -142,8 +147,11 @@ public class LoginPage extends AbstractCtPage {
 
     @Override
     public boolean isCurrent() {
-        String realm = "test";
-        return isCurrent(realm);
+        return isCurrent("test");
+    }
+
+    public boolean isCurrent(ManagedRealm realm) {
+        return isCurrent(realm.getName());
     }
 
     public boolean isCurrent(String realm) {
@@ -188,12 +196,9 @@ public class LoginPage extends AbstractCtPage {
         return rememberMe.isSelected();
     }
 
+    @Override
     public void open(ManagedRealm realm) {
-        openLoginForm(realm);
+        super.open(realm);
         assertCurrent();
-    }
-
-    private void openLoginForm(ManagedRealm realm) {
-        driver.navigate().to(getLoginFormUrl(realm));
     }
 }

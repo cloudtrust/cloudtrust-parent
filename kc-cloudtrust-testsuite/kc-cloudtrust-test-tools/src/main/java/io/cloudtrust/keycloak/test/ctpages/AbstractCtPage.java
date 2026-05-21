@@ -61,8 +61,14 @@ public abstract class AbstractCtPage extends AbstractPage {
         Assertions.assertTrue(isCurrent(), "Expected " + name + " but was " + driver.getTitle() + " (" + driver.getCurrentUrl() + ")");
     }
 
+    /**
+     * Deprecated method... Use AbstractPage::isActivePage instead
+     * @return true if the current page is the expected one
+     */
+    @Deprecated
     public boolean isCurrent() {
-        return false;
+        var currentPageId = getCurrentPageId();
+        return currentPageId!=null && currentPageId.equals(getExpectedPageId());
     }
 
     public boolean isNotCurrent() {
@@ -75,6 +81,10 @@ public abstract class AbstractCtPage extends AbstractPage {
 
     public void open() {
         throw new CloudtrustRuntimeException("open() not implemented");
+    }
+
+    public void open(ManagedRealm realm) {
+        this.driver.navigate().to(getLoginFormUrl(realm));
     }
 
     /**
@@ -216,6 +226,10 @@ public abstract class AbstractCtPage extends AbstractPage {
             input.sendKeys("1");
             input.sendKeys(Keys.BACK_SPACE);
         }
+    }
+
+    public void refresh() {
+        driver.navigate().refresh();
     }
 
     public String getCurrentUrl() {

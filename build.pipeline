@@ -2,6 +2,7 @@ javaBuildPipeline(
     'kc-cloudtrust-parent',
     [
         [name: 'cloudtrust-parent', path: '.'],
+        [name: 'cloudtrust-bom', path: './cloudtrust-bom'],
         [name: 'cloudtrust-test-tools', path: './cloudtrust-test-tools'],
         [name: 'cloudtrust-common', path: './cloudtrust-common'],
         [name: 'kc-cloudtrust-common', path: './kc-cloudtrust-module/kc-cloudtrust-common', pom: './kc-cloudtrust-module/pom.xml'],

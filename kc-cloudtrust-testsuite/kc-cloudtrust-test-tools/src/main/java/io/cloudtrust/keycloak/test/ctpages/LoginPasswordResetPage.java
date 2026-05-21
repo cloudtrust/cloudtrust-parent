@@ -49,7 +49,7 @@ public class LoginPasswordResetPage extends AbstractCtPage {
     }
 
     @Override
-    public boolean isCurrent() {
+    public boolean isActivePage() {
         return getPageTitle(driver).equals("Forgot Your Password?");
     }
 
