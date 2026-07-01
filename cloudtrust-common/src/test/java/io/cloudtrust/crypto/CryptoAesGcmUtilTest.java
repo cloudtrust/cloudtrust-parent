@@ -79,6 +79,18 @@ class CryptoAesGcmUtilTest {
         assertThat(codec.decryptFromDatabaseStorage(encryptedString), equalTo("TEST_value".getBytes(StandardCharsets.UTF_8)));
     }
 
+    @Test
+    void testDecryptionOfNullValue() throws JsonProcessingException {
+        CryptoAesGcmUtil codec = CryptoAesGcmUtil.fromEnvironment();
+        assertThat(codec.decryptFromDatabaseStorage(null), nullValue());
+    }
+
+    @Test
+    void testDecryptionToStringOfNullValue() throws JsonProcessingException {
+        CryptoAesGcmUtil codec = CryptoAesGcmUtil.fromEnvironment();
+        assertThat(codec.decryptFromDatabaseStorageToString(null), nullValue());
+    }
+
     /**
      * test that the output fits by default in a VARCHAR(255) field in the DB
      *

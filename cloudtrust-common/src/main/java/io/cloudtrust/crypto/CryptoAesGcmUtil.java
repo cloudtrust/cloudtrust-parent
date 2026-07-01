@@ -186,6 +186,7 @@ public class CryptoAesGcmUtil {
     }
 
     public String decryptFromDatabaseStorageToString(String data) {
+        if (data == null) return null;
         return new String(decryptFromDatabaseStorage(data), StandardCharsets.UTF_8);
     }
 
@@ -196,6 +197,7 @@ public class CryptoAesGcmUtil {
      * @return decrypted data as a UTF-8 encoded String
      */
     public byte[] decryptFromDatabaseStorage(String data) {
+        if (data == null) return null;
         try {
             // parse json structure
             EncryptedData encData = new ObjectMapper().readValue(data, EncryptedData.class);
