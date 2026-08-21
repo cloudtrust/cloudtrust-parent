@@ -19,8 +19,8 @@ import org.keycloak.services.managers.AppAuthManager.BearerTokenAuthenticator;
 import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.services.managers.RealmManager;
 import org.keycloak.services.resources.admin.AdminAuth;
-import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
-import org.keycloak.services.resources.admin.permissions.AdminPermissions;
+import org.keycloak.services.resources.admin.fgap.AdminPermissionEvaluator;
+import org.keycloak.services.resources.admin.fgap.AdminPermissions;
 
 public class ApiResource {
     private static final Logger LOG = Logger.getLogger(ApiResource.class);
@@ -79,7 +79,7 @@ public class ApiResource {
             throw new NotFoundException("Could not find client for authorization");
         }
 
-        return new AdminAuth(realm, authResult.getToken(), authResult.getUser(), client);
+        return new AdminAuth(realm, authResult.token(), authResult.user(), client);
     }
 
     protected AdminAuth auth() {
@@ -90,7 +90,7 @@ public class ApiResource {
         }
 
         LOG.debugf("authenticated admin access for: %s", auth.getUser().getUsername());
-        Cors.builder().allowedOrigins(auth.getToken()).allowedMethods("GET", "PUT", "POST", "DELETE").exposedHeaders("Location").auth().add();
+        Cors.builder().checkAllowedOrigins(auth.getToken()).allowedMethods("GET", "PUT", "POST", "DELETE").exposedHeaders("Location").auth().add();
 
         return auth;
     }
@@ -107,7 +107,7 @@ public class ApiResource {
             throw new NotFoundException("notFound.realm");
         }
 
-        if (!auth.getRealm().equals(realmManager.getKeycloakAdminstrationRealm()) && !auth.getRealm().equals(realm)) {
+        if (!auth.getRealm().equals(realmManager.getKeycloakAdministrationRealm()) && !auth.getRealm().equals(realm)) {
             throw new ForbiddenException();
         }
 

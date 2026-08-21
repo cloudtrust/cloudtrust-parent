@@ -20,15 +20,6 @@ public class CtPageMatchers extends AbstractMatchers<AbstractCtPage> {
         return item instanceof AbstractCtPage res ? res : null;
     }
 
-    /**
-     * Use isActivePage instead
-     * @return
-     */
-    @Deprecated
-    public static BaseMatcher<AbstractCtPage> isCurrent() {
-        return isActivePage();
-    }
-
     public static BaseMatcher<AbstractCtPage> isActivePage() {
         return new CtPageMatchers(
                 AbstractCtPage::isActivePage,
@@ -36,18 +27,9 @@ public class CtPageMatchers extends AbstractMatchers<AbstractCtPage> {
         );
     }
 
-    /**
-     * Use isNotActivePage instead
-     * @return
-     */
-    @Deprecated
-    public static BaseMatcher<AbstractCtPage> isNotCurrent() {
-        return isNotActivePage();
-    }
-
     public static BaseMatcher<AbstractCtPage> isNotActivePage() {
         return new CtPageMatchers(
-                p -> !p.isCurrent(),
+                p -> !p.isActivePage(),
                 p -> String.format("Current page is %s", p.getClass().getName()),
                 true
         );
