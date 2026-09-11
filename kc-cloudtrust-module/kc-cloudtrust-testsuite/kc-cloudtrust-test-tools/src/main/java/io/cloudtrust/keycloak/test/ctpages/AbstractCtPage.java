@@ -7,6 +7,7 @@ import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.keycloak.testframework.realm.ManagedRealm;
 import org.keycloak.testframework.ui.page.AbstractPage;
+import org.keycloak.testframework.ui.webdriver.ManagedWebDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
@@ -27,6 +28,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Objects;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.javaScriptThrowsNoExceptions;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -48,31 +50,12 @@ public abstract class AbstractCtPage extends AbstractPage {
     public static final String PAGELOAD_TIMEOUT_PROP = "pageload.timeout";
     public static final Integer PAGELOAD_TIMEOUT_MILLIS = Integer.parseInt(System.getProperty(PAGELOAD_TIMEOUT_PROP, "10000"));
 
-    public AbstractCtPage(WebDriver driver) {
+    public AbstractCtPage(ManagedWebDriver driver) {
         super(driver);
     }
 
     private static synchronized int nextSaveIndex() {
         return ++saveIndex;
-    }
-
-    public void assertCurrent() {
-        String name = getClass().getSimpleName();
-        Assertions.assertTrue(isCurrent(), "Expected " + name + " but was " + driver.getTitle() + " (" + driver.getCurrentUrl() + ")");
-    }
-
-    /**
-     * Deprecated method... Use AbstractPage::isActivePage instead
-     * @return true if the current page is the expected one
-     */
-    @Deprecated
-    public boolean isCurrent() {
-        var currentPageId = getCurrentPageId();
-        return currentPageId!=null && currentPageId.equals(getExpectedPageId());
-    }
-
-    public boolean isNotCurrent() {
-        return !isCurrent();
     }
 
     public String getLoginFormUrl(ManagedRealm realm) {
@@ -84,7 +67,7 @@ public abstract class AbstractCtPage extends AbstractPage {
     }
 
     public void open(ManagedRealm realm) {
-        this.driver.navigate().to(getLoginFormUrl(realm));
+        this.driver.driver().navigate().to(getLoginFormUrl(realm));
     }
 
     /**
@@ -100,7 +83,7 @@ public abstract class AbstractCtPage extends AbstractPage {
      * @param automaticallyConfirmLogout If a confirmation is required, tells if confirmation should be given automatically or not
      */
     public void openLogout(ManagedRealm realm, boolean automaticallyConfirmLogout) {
-        driver.navigate().to(new OAuthClient(realm).getLogoutFormUrl());
+        driver.driver().navigate().to(new OAuthClient(realm).getLogoutFormUrl());
         if (automaticallyConfirmLogout) {
             WebElement elt = this.driver.findElement(By.id("kc-logout"));
             if (elt != null) {
@@ -114,8 +97,8 @@ public abstract class AbstractCtPage extends AbstractPage {
 
         // Safari sometimes thinks an element is not visible
         // even though it is. In this case we just move the cursor and click.
-        if (driver instanceof SafariDriver && !element.isDisplayed()) {
-            performOperationWithPageReload(() -> new Actions(driver).click(element).perform());
+        if (driver.driver() instanceof SafariDriver && !element.isDisplayed()) {
+            performOperationWithPageReload(() -> new Actions(driver.driver()).click(element).perform());
         } else {
             performOperationWithPageReload(element::click);
         }
@@ -127,7 +110,7 @@ public abstract class AbstractCtPage extends AbstractPage {
     }
 
     protected void waitForPageToLoad() {
-        if (this.driver instanceof HtmlUnitDriver) {
+        if (this.driver.driver() instanceof HtmlUnitDriver) {
             return; // not needed
         }
 
@@ -136,7 +119,7 @@ public abstract class AbstractCtPage extends AbstractPage {
         // Ensure the URL is "stable", i.e. is not changing anymore; if it'd changing, some redirects are probably still in progress
         for (int maxRedirects = 4; maxRedirects > 0; maxRedirects--) {
             currentUrl = this.driver.getCurrentUrl();
-            FluentWait<WebDriver> wait = new FluentWait<>(this.driver).withTimeout(Duration.ofMillis(250));
+            FluentWait<WebDriver> wait = new FluentWait<>(this.driver.driver()).withTimeout(Duration.ofMillis(250));
             try {
                 wait.until(not(urlToBe(currentUrl)));
             } catch (TimeoutException e) {
@@ -147,7 +130,7 @@ public abstract class AbstractCtPage extends AbstractPage {
             }
         }
 
-        WebDriverWait wait = new WebDriverWait(this.driver, Duration.ofMillis(PAGELOAD_TIMEOUT_MILLIS));
+        WebDriverWait wait = new WebDriverWait(this.driver.driver(), Duration.ofMillis(PAGELOAD_TIMEOUT_MILLIS));
         ExpectedCondition<Boolean> waitCondition = null;
 
         // Different wait strategies for Admin and Account Consoles
@@ -205,7 +188,7 @@ public abstract class AbstractCtPage extends AbstractPage {
 
     public String getTextFromElement(WebElement element) {
         String text = element.getText();
-        if (driver instanceof SafariDriver) {
+        if (driver.driver() instanceof SafariDriver) {
             try {
                 // Safari on macOS doesn't comply with WebDriver specs yet again - getText() retrieves hidden text by CSS.
                 text = element.findElement(By.xpath("./span[not(contains(@class,'ng-hide'))]")).getText();
@@ -237,7 +220,7 @@ public abstract class AbstractCtPage extends AbstractPage {
     }
 
     public String getPageSource() {
-        return driver.getPageSource();
+        return driver.driver().getPageSource();
     }
 
     public String getPageTitle(WebDriver driver) {
@@ -245,7 +228,8 @@ public abstract class AbstractCtPage extends AbstractPage {
     }
 
     public boolean pageContains(String text) {
-        return driver.getPageSource().contains(text);
+        String pageSource = driver.driver().getPageSource();
+        return Objects.nonNull(pageSource) && pageSource.contains(text);
     }
 
     public String getPageTitle() {
@@ -268,7 +252,7 @@ public abstract class AbstractCtPage extends AbstractPage {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(res))) {
                 writer.write("<!-- " + this.getCurrentUrl() + " -->\n");
                 writer.write("<!-- " + comment + " -->\n");
-                writer.write(this.driver.getPageSource());
+                writer.write(this.driver.driver().getPageSource());
             }
         } catch (Exception e) {
             // Ignore
@@ -286,7 +270,15 @@ public abstract class AbstractCtPage extends AbstractPage {
         if (!this.savedURLs.isEmpty()) {
             String url = this.savedURLs.pop();
             log.info("Returning to " + url);
-            this.driver.navigate().to(url);
+            this.driver.driver().navigate().to(url);
         }
+    }
+
+    public boolean isActivePage() {
+        return this.getExpectedPageId().equals(this.driver.page().getCurrentPageId());
+    }
+
+    public String getCurrentPageId() {
+        return this.driver.page().getCurrentPageId();
     }
 }
