@@ -1,8 +1,8 @@
 package io.cloudtrust.keycloak.test.ctpages;
 
-import org.junit.jupiter.api.Assertions;
 import org.keycloak.testframework.realm.ManagedRealm;
 import org.keycloak.testframework.realm.ManagedUser;
+import org.keycloak.testframework.ui.webdriver.ManagedWebDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -58,13 +58,15 @@ public class LoginPage extends AbstractCtPage {
     @FindBy(className = "instruction")
     private WebElement instruction;
 
-    public LoginPage(WebDriver driver) {
+    public LoginPage(ManagedWebDriver driver) {
         super(driver);
     }
 
     @Override
     public String getExpectedPageId() {
-        return null;
+        // The base login theme renders <body data-page-id="login-${pageId}">, so the login form is
+        // "login-login" -- the same value upstream's own org.keycloak.testframework.ui.page.LoginPage expects.
+        return "login-login";
     }
 
     public void login(ManagedUser user) {
@@ -143,24 +145,6 @@ public class LoginPage extends AbstractCtPage {
 
     public String getInfoMessage() {
         return loginInfoMessage != null ? loginInfoMessage.getText() : null;
-    }
-
-    @Override
-    public boolean isCurrent() {
-        return isCurrent("test");
-    }
-
-    public boolean isCurrent(ManagedRealm realm) {
-        return isCurrent(realm.getName());
-    }
-
-    public boolean isCurrent(String realm) {
-        return driver.getTitle().equals("Sign in to " + realm) || driver.getTitle().equals("Anmeldung bei " + realm);
-    }
-
-    public void assertCurrent(String realm) {
-        String name = getClass().getSimpleName();
-        Assertions.assertTrue(isCurrent(realm), "Expected " + name + " but was " + driver.getTitle() + " (" + driver.getCurrentUrl() + ")");
     }
 
     public void clickRegister() {

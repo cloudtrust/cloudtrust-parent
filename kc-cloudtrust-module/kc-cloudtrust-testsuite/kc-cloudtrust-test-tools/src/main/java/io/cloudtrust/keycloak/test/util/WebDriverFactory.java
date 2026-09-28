@@ -22,20 +22,19 @@ public class WebDriverFactory {
 
     public static WebDriver provide() {
         if (webDriver == null) {
-            webDriver = provide(TestSuiteParameters.get().getEnv("browser", ""));
+            webDriver = createHtmlUnitDriver(true);
         }
         return webDriver;
     }
 
+    /**
+     * Use @link{WebDriverFactory.createHtmlUnitDriver}
+     * @param driver
+     * @return
+     */
+    @Deprecated
     public static WebDriver provide(String driver) {
-        return switch (driver) {
-            case "chrome" -> createChromeDriver(TestSuiteParameters.get().getEnv("chromeArguments", ""), false);
-            case "chrome-headless" -> createChromeDriver(TestSuiteParameters.get().getEnv("chromeArguments", ""), true);
-            case "firefox" -> createFirefoxDriver(TestSuiteParameters.get().getEnv("firefoxArguments", ""), false);
-            case "firefox-headless" -> createFirefoxDriver(TestSuiteParameters.get().getEnv("firefoxArguments", ""), true);
-            case "htmlunit-nojavascript" -> createHtmlUnitDriver(false);
-            default -> createHtmlUnitDriver(true);
-        };
+        return createHtmlUnitDriver(true);
     }
 
     public static WebDriver createHtmlUnitDriver(boolean enableJavascript) {

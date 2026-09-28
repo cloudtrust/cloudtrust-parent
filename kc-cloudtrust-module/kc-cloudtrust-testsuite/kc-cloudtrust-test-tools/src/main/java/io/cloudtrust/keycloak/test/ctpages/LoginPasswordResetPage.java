@@ -1,6 +1,6 @@
 package io.cloudtrust.keycloak.test.ctpages;
 
-import io.cloudtrust.keycloak.test.pages.AbstractPage;
+import org.keycloak.testframework.ui.webdriver.ManagedWebDriver;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,13 +28,13 @@ public class LoginPasswordResetPage extends AbstractCtPage {
     @FindBy(partialLinkText = "Back to Login")
     private WebElement backToLogin;
 
-    public LoginPasswordResetPage(WebDriver driver) {
+    public LoginPasswordResetPage(ManagedWebDriver driver) {
         super(driver);
     }
 
     @Override
     public String getExpectedPageId() {
-        return null;
+        return "login-login-reset-password";
     }
 
     public void changePassword() {
@@ -50,7 +50,7 @@ public class LoginPasswordResetPage extends AbstractCtPage {
 
     @Override
     public boolean isActivePage() {
-        return getPageTitle(driver).equals("Forgot Your Password?");
+        return getPageTitle(driver.driver()).equals("Forgot Your Password?");
     }
 
     public String getSuccessMessage() {

@@ -41,11 +41,6 @@ public class ExtensionApi {
     private final ObjectMapper mapper = new ObjectMapper();
     private String token;
 
-    public ExtensionApi(String keycloakURL, KeycloakClientProvider keycloakClientProvider) {
-        this.keycloakURL = keycloakURL;
-        this.tokenProvider = () -> keycloakClientProvider.getKeycloakAdminClient().tokenManager().getAccessTokenString();
-    }
-
     public ExtensionApi(String keycloakURL, TokenProvider tokenProvider) {
         this.keycloakURL = keycloakURL;
         this.tokenProvider = tokenProvider;

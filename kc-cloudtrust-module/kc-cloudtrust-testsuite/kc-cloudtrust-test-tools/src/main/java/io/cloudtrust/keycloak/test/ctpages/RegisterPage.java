@@ -1,9 +1,11 @@
 package io.cloudtrust.keycloak.test.ctpages;
 
+import org.keycloak.testframework.ui.webdriver.ManagedWebDriver;
 import org.openqa.selenium.WebDriver;
 
 public class RegisterPage extends AbstractCtPage {
-    public RegisterPage(WebDriver driver) {
+
+    public RegisterPage(ManagedWebDriver driver) {
         super(driver);
     }
 
@@ -12,7 +14,8 @@ public class RegisterPage extends AbstractCtPage {
         return null;
     }
 
-    public boolean isCurrent() {
+    @Override
+    public boolean isActivePage() {
         return getPageTitle().equals("Register");
     }
 }
