@@ -26,7 +26,6 @@ public final class CtBruteForceCategories {
      */
     public static final Set<String> PRIMARY_CATEGORIES = Set.of(PasswordCredentialModel.TYPE);
 
-
     private static final Set<String> REGISTERED = ConcurrentHashMap.newKeySet();
 
     private CtBruteForceCategories() {
@@ -49,19 +48,11 @@ public final class CtBruteForceCategories {
     }
 
     /**
-     * <<<<<<< HEAD
      * Maps the authentication categories of a login failure to the ones Keycloak's brute force protector has to process.
      * <p>
      * When none of the categories is allowed by Keycloak but at least one is registered by CloudTrust, the categories
      * are replaced by {@link #PRIMARY_CATEGORIES}. In every other case, including null (which Keycloak still counts
      * as a failure), the categories are left untouched.
-     * =======
-     * Maps the authentication categories received by the brute force protector to the ones it has to process.
-     * <p>
-     * When none of the categories is allowed by Keycloak but at least one is registered by CloudTrust, the categories
-     * are replaced by null: Keycloak processes a null category set like any allowed non-OTP category, which is what it
-     * did for the CloudTrust categories up to Keycloak 26.6.4. In every other case the categories are left untouched.
-     * >>>>>>> b04b776 (centralize BruteForce)
      *
      * @param categories categories received by the brute force protector
      * @return categories to forward to Keycloak's brute force protector
