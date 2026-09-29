@@ -1,5 +1,6 @@
 package io.cloudtrust.keycloak.bruteforce;
 
+import org.keycloak.models.credential.PasswordCredentialModel;
 import org.keycloak.services.managers.DefaultBruteForceProtector;
 
 import java.util.Collections;
@@ -17,6 +18,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * brute force protector count them again.
  */
 public final class CtBruteForceCategories {
+    /**
+     * Allowed category forwarded to Keycloak for the CloudTrust categories. Keycloak only uses the categories of a
+     * processed login to detect OTP (which also counts/clears secondary authentication failures), so the password
+     * category gives the CloudTrust categories the same processing they had up to Keycloak 26.6.4: primary failures
+     * are counted on failure and cleared on success.
+     */
+    public static final Set<String> PRIMARY_CATEGORIES = Set.of(PasswordCredentialModel.TYPE);
+
     private static final Set<String> REGISTERED = ConcurrentHashMap.newKeySet();
 
     private CtBruteForceCategories() {
@@ -39,22 +48,38 @@ public final class CtBruteForceCategories {
     }
 
     /**
-     * Maps the authentication categories received by the brute force protector to the ones it has to process.
+     * Maps the authentication categories of a login failure to the ones Keycloak's brute force protector has to process.
      * <p>
      * When none of the categories is allowed by Keycloak but at least one is registered by CloudTrust, the categories
-     * are replaced by null: Keycloak processes a null category set like any allowed non-OTP category, which is what it
-     * did for the CloudTrust categories up to Keycloak 26.6.4. In every other case the categories are left untouched.
+     * are replaced by {@link #PRIMARY_CATEGORIES}. In every other case, including null (which Keycloak still counts
+     * as a failure), the categories are left untouched.
      *
      * @param categories categories received by the brute force protector
      * @return categories to forward to Keycloak's brute force protector
      */
-    public static Set<String> toProcessedCategories(Set<String> categories) {
+    public static Set<String> toProcessedFailureCategories(Set<String> categories) {
         if (categories != null
                 && Collections.disjoint(DefaultBruteForceProtector.ALLOWED_AUTHENTICATION_CATEGORIES, categories)
                 && !Collections.disjoint(REGISTERED, categories)) {
-            return null;
+            return PRIMARY_CATEGORIES;
         }
         return categories;
+    }
+
+    /**
+     * Maps the authentication categories of a successful login to the ones Keycloak's brute force protector has to
+     * process.
+     * <p>
+     * Same as {@link #toProcessedFailureCategories(Set)}, except that null is also replaced by
+     * {@link #PRIMARY_CATEGORIES}: up to Keycloak 26.6.4 a successful login without category reset the failure count,
+     * since Keycloak 26.6.7 DefaultBruteForceProtector#successfulLogin silently ignores it (failedLogin still counts
+     * a null category). CloudTrust services that report a success with a null category rely on that reset.
+     *
+     * @param categories categories received by the brute force protector
+     * @return categories to forward to Keycloak's brute force protector
+     */
+    public static Set<String> toProcessedSuccessCategories(Set<String> categories) {
+        return categories == null ? PRIMARY_CATEGORIES : toProcessedFailureCategories(categories);
     }
 
     static void clear() {

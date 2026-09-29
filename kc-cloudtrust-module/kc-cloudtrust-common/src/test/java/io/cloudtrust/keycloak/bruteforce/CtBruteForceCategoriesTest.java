@@ -26,27 +26,36 @@ class CtBruteForceCategoriesTest {
     }
 
     @Test
-    void nullCategoriesAreKeptTest() {
-        Assertions.assertNull(CtBruteForceCategories.toProcessedCategories(null));
+    void nullFailureCategoriesAreKeptTest() {
+        Assertions.assertNull(CtBruteForceCategories.toProcessedFailureCategories(null));
+    }
+
+    @Test
+    void nullSuccessCategoriesAreProcessedTest() {
+        Assertions.assertEquals(Set.of("password"), CtBruteForceCategories.toProcessedSuccessCategories(null));
     }
 
     @Test
     void registeredCategoryIsProcessedTest() {
-        Assertions.assertNull(CtBruteForceCategories.toProcessedCategories(Set.of("ctsms")));
+        Assertions.assertEquals(Set.of("password"), CtBruteForceCategories.toProcessedFailureCategories(Set.of("ctsms")));
+        Assertions.assertEquals(Set.of("password"), CtBruteForceCategories.toProcessedSuccessCategories(Set.of("ctsms")));
     }
 
     @Test
     void allowedCategoryIsKeptTest() {
         Set<String> categories = Set.of("otp");
-        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedCategories(categories));
+        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedFailureCategories(categories));
+        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedSuccessCategories(categories));
         categories = Set.of("otp", "ctsms");
-        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedCategories(categories));
+        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedFailureCategories(categories));
+        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedSuccessCategories(categories));
     }
 
     @Test
     void unknownCategoryIsKeptTest() {
         Set<String> categories = Set.of("webauthn");
-        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedCategories(categories));
-        Assertions.assertTrue(CtBruteForceCategories.toProcessedCategories(Set.of()).isEmpty());
+        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedFailureCategories(categories));
+        Assertions.assertSame(categories, CtBruteForceCategories.toProcessedSuccessCategories(categories));
+        Assertions.assertTrue(CtBruteForceCategories.toProcessedFailureCategories(Set.of()).isEmpty());
     }
 }

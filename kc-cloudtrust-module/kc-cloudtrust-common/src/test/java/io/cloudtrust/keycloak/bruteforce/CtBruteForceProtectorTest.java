@@ -31,11 +31,19 @@ class CtBruteForceProtectorTest {
     }
 
     @Test
-    void registeredCategoryIsForwardedAsNullTest() {
+    void registeredCategoryIsForwardedAsPrimaryTest() {
         protector.failedLogin(null, null, null, null, Set.of("ctsms"));
-        verify(delegate).failedLogin(any(), any(), any(), any(), isNull());
+        verify(delegate).failedLogin(any(), any(), any(), any(), eq(Set.of("password")));
         protector.successfulLogin(null, null, null, null, Set.of("ctsms"));
-        verify(delegate).successfulLogin(any(), any(), any(), any(), isNull());
+        verify(delegate).successfulLogin(any(), any(), any(), any(), eq(Set.of("password")));
+    }
+
+    @Test
+    void nullCategoryTest() {
+        protector.failedLogin(null, null, null, null, null);
+        verify(delegate).failedLogin(any(), any(), any(), any(), isNull());
+        protector.successfulLogin(null, null, null, null, null);
+        verify(delegate).successfulLogin(any(), any(), any(), any(), eq(Set.of("password")));
     }
 
     @Test

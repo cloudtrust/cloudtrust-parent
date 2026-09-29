@@ -22,12 +22,12 @@ public class CtBruteForceProtector implements BruteForceProtector {
 
     @Override
     public void failedLogin(RealmModel realm, UserModel user, ClientConnection clientConnection, UriInfo uriInfo, Set<String> authenticationCategories) {
-        delegate.failedLogin(realm, user, clientConnection, uriInfo, CtBruteForceCategories.toProcessedCategories(authenticationCategories));
+        delegate.failedLogin(realm, user, clientConnection, uriInfo, CtBruteForceCategories.toProcessedFailureCategories(authenticationCategories));
     }
 
     @Override
     public void successfulLogin(RealmModel realm, UserModel user, ClientConnection clientConnection, UriInfo uriInfo, Set<String> authenticationCategories) {
-        delegate.successfulLogin(realm, user, clientConnection, uriInfo, CtBruteForceCategories.toProcessedCategories(authenticationCategories));
+        delegate.successfulLogin(realm, user, clientConnection, uriInfo, CtBruteForceCategories.toProcessedSuccessCategories(authenticationCategories));
     }
 
     @Override
