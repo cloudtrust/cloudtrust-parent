@@ -3,14 +3,14 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>cloudtrust-parent</artifactId>
-    <version>27.0.0</version>
+    <version>27.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
         <connection>scm:git:ssh://git@github.com/cloudtrust/cloudtrust-parent</connection>
         <developerConnection>scm:git:ssh://git@github.com/cloudtrust/cloudtrust-parent</developerConnection>
         <url>https://github.com/cloudtrust/cloudtrust-parent</url>
-        <tag>27.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
@@ -61,7 +61,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>27.0.0</version>
+                <version>27.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

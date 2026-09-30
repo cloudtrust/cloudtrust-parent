@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.cloudtrust</groupId>
         <artifactId>cloudtrust-parent</artifactId>
-        <version>27.0.0</version>
+        <version>27.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>kc-cloudtrust-module</artifactId>
@@ -77,12 +77,12 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>27.0.0</version>
+                <version>27.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-common</artifactId>
-                <version>27.0.0</version>
+                <version>27.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
