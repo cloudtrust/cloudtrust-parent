@@ -91,10 +91,6 @@ public class OAuthClient {
         return b.build(realm).toString();
     }
 
-    public void openLoginForm() {
-        WebDriverFactory.provide().navigate().to(getLoginFormUrl());
-    }
-
     public String getLogoutFormUrl() {
         UriBuilder b = OIDCLoginProtocolService.logoutUrl(UriBuilder.fromUri(baseUrl));
         whenNotNull(this.postLogoutRedirectUri, () -> b.queryParam(POST_LOGOUT_REDIRECT_URI, getPostLogoutRedirectUri()));
@@ -102,10 +98,6 @@ public class OAuthClient {
         whenNotNull(this.initiatingIDP, () -> b.queryParam(INITIATING_IDP_PARAM, getInitiatingIDP()));
 
         return b.build(realm).toString();
-    }
-
-    public void openLogout() {
-        WebDriverFactory.provide().navigate().to(getLogoutFormUrl());
     }
 
     private <T> void whenNotNull(T value, Runnable runnable) {

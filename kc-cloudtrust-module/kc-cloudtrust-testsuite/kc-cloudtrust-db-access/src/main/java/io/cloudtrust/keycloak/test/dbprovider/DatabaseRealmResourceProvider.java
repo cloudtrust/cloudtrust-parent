@@ -58,7 +58,7 @@ public class DatabaseRealmResourceProvider implements RealmResourceProvider {
         EntityManager em = session.getProvider(JpaConnectionProvider.class).getEntityManager();
         Map<String, List<String>> res = new HashMap<>();
         List<Object[]> result = em.createNativeQuery("SELECT * FROM USER_ATTRIBUTE WHERE USER_ID IN (SELECT ID FROM USER_ENTITY WHERE REALM_ID=:realm) AND USER_ID=:userId")
-                .setParameter("realm", this.session.getContext().getRealm().getName())
+                .setParameter("realm", this.session.getContext().getRealm().getId())
                 .setParameter("userId", userId)
                 .getResultList();
         result.forEach(row -> {

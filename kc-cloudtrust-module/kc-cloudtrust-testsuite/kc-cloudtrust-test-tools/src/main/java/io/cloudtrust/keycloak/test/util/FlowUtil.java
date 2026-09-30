@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
 
 public class FlowUtil {
     private final RealmResource realm;
-    private final Random rand = new Random(System.currentTimeMillis());
     private final Pattern identifierAtEndPattern = Pattern.compile("/([^/]+)$");
     private AuthenticationFlowRepresentation currentFlow;
     private int maxPriority = 0;
@@ -178,6 +177,10 @@ public class FlowUtil {
 
     private String getHeader(Supplier<Response> apiCall, String headerName, Pattern pattern) {
         try (Response resp = apiCall.get()) {
+            if (resp.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
+                String body = resp.hasEntity() ? resp.readEntity(String.class) : "";
+                throw new FlowUtilException("Admin API call failed with HTTP " + resp.getStatus() + ": " + body);
+            }
             MultivaluedMap<String, Object> headers = resp.getHeaders();
             if (headers == null || !headers.containsKey(headerName) || headers.get(headerName).isEmpty()) {
                 return null;
@@ -266,8 +269,8 @@ public class FlowUtil {
         execution.setParentFlow(currentFlow.getId());
         if (configInitializer != null) {
             authConfig = new AuthenticatorConfigRepresentation();
-            // Caller is free to update this alias
-            authConfig.setAlias("cfg-" + rand.nextInt(1000));
+            // Caller is free to update this alias. It must be unique in the realm: Keycloak rejects a duplicate one
+            authConfig.setAlias("cfg-" + UUID.randomUUID());
             authConfig.setConfig(new HashMap<>());
             configInitializer.accept(authConfig);
         }
