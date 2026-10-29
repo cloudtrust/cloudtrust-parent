@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.cloudtrust</groupId>
         <artifactId>cloudtrust-parent</artifactId>
-        <version>27.0.1-SNAPSHOT</version>
+        <version>28.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>cloudtrust-bom</artifactId>
@@ -14,7 +14,7 @@
 
     <properties>
         <!-- Third-party versions exposed to BOM consumers -->
-        <keycloak.version>26.6.7</keycloak.version>
+        <keycloak.version>26.8.1</keycloak.version>
         <java.version>21</java.version>
         <jackson-core.version>2.18.2</jackson-core.version>
         <jackson-databind.version>2.18.2</jackson-databind.version>
@@ -42,7 +42,7 @@
         <jbosslogging.version>3.4.1.Final</jbosslogging.version>
         <slf4j.version>2.0.16</slf4j.version>
         <greenmail.version>2.1.2</greenmail.version>
-        <selenium.version>4.39.0</selenium.version>
+        <selenium.version>4.46.0</selenium.version>
     </properties>
 
     <dependencyManagement>
@@ -50,25 +50,25 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>27.0.1-SNAPSHOT</version>
+                <version>28.0.0-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-common</artifactId>
-                <version>27.0.1-SNAPSHOT</version>
+                <version>28.0.0-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-test-tools</artifactId>
-                <version>27.0.1-SNAPSHOT</version>
+                <version>28.0.0-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-test-tools</artifactId>
-                <version>27.0.1-SNAPSHOT</version>
+                <version>28.0.0-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

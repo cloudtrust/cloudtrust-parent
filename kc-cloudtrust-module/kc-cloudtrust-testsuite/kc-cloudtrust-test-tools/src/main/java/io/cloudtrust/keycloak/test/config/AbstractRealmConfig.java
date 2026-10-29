@@ -10,7 +10,7 @@ import org.keycloak.representations.idm.RequiredActionProviderRepresentation;
 import org.keycloak.representations.userprofile.config.UPAttribute;
 import org.keycloak.representations.userprofile.config.UPAttributePermissions;
 import org.keycloak.testframework.realm.RealmConfig;
-import org.keycloak.testframework.realm.RealmConfigBuilder;
+import org.keycloak.testframework.realm.RealmBuilder;
 import org.keycloak.userprofile.DeclarativeUserProfileProvider;
 import org.keycloak.userprofile.DeclarativeUserProfileProviderFactory;
 import org.keycloak.userprofile.UserProfileProvider;
@@ -58,17 +58,17 @@ public class AbstractRealmConfig implements RealmConfig {
     }
 
     @Override
-    public RealmConfigBuilder configure(RealmConfigBuilder realmConfigBuilder) {
+    public RealmBuilder configure(RealmBuilder realmBuilder) {
         try {
             if (filename != null) {
                 var inputStream = getClass().getResourceAsStream(filename);
                 var realmRepresentation = new ObjectMapper().readValue(inputStream, RealmRepresentation.class);
-                realmConfigBuilder = RealmConfigBuilder.update(realmRepresentation);
+                realmBuilder = RealmBuilder.update(realmRepresentation);
             }
         } catch (IOException e) {
             LOG.error("Can't initialize realm config", e);
         }
-        var realmRep = realmConfigBuilder.build();
+        var realmRep = realmBuilder.build();
         declareUserProfile(realmRep);
         if (requiredActions != null) {
             realmRep.setRequiredActions(requiredActions);
@@ -77,7 +77,7 @@ public class AbstractRealmConfig implements RealmConfig {
         if (LOG.isDebugEnabled()) {
             LOG.debug(JsonToolbox.toString(realmRep));
         }
-        return realmConfigBuilder;
+        return realmBuilder;
     }
 
     private void declareUserProfile(RealmRepresentation realm) {
